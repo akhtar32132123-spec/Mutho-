@@ -4,107 +4,435 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MUTHO PHOTO — Photography Portfolio</title>
+<meta name="theme-color" content="#eeeae1">
+<title>MUTHO PHOTO — Visual Stories</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
+:root{
+  --paper:#eeeae1;
+  --ink:#191916;
+  --muted:#77766e;
+  --line:#cbc6ba;
+  --white:#fffdf8;
+}
 *{box-sizing:border-box}
-:root{--bg:#09090b;--panel:#17171b;--muted:#92929b;--white:#f5f5f5}
-body{margin:0;background:var(--bg);color:var(--white);font-family:Arial,sans-serif}
-header{padding:23px 6%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #252529}
-.logo{font-size:23px;font-weight:900;letter-spacing:4px}
-.sub{font-size:10px;letter-spacing:3px;color:var(--muted);margin-top:6px}
-button{border:0;border-radius:30px;padding:11px 18px;background:#eee;color:#111;font-weight:bold;cursor:pointer}
-button.secondary{background:#25252b;color:white}
-button:disabled{opacity:.5;cursor:wait}
-main{max-width:1500px;margin:auto;padding:35px 5%}
-.hero{padding:35px 0 45px}
-.eyebrow{font-size:11px;letter-spacing:4px;color:#aaa}
-h1{font-size:clamp(48px,10vw,110px);line-height:.95;letter-spacing:-5px;margin:18px 0}
-.hero p{max-width:500px;color:#999;line-height:1.8}
-.section-title{font-size:12px;letter-spacing:4px;color:#999;margin:15px 0}
-.marquee{width:100%;overflow:hidden;margin:25px 0 55px;mask-image:linear-gradient(to right,transparent,black 7%,black 93%,transparent)}
-.track{display:flex;width:max-content;gap:14px;animation:scroll 42s linear infinite}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'DM Sans',sans-serif;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+.topline{
+  height:5px;
+  background:var(--ink);
+}
+header{
+  padding:24px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+}
+.logo{
+  font-family:'Playfair Display',serif;
+  font-size:27px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+.logo span{font-style:italic;font-weight:400}
+.header-right{
+  display:flex;
+  gap:25px;
+  align-items:center;
+}
+.header-note{
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:2px;
+}
+.owner-button{
+  border:1px solid var(--ink);
+  color:var(--ink);
+  background:transparent;
+  padding:10px 17px;
+  font-size:10px;
+  letter-spacing:2px;
+  transition:.2s;
+}
+.owner-button:hover{
+  background:var(--ink);
+  color:var(--paper);
+}
+
+main{
+  max-width:1500px;
+  margin:auto;
+  padding:0 6%;
+}
+.hero{
+  padding:75px 0 45px;
+  border-bottom:1px solid var(--line);
+}
+.eyebrow{
+  font-size:10px;
+  letter-spacing:4px;
+  color:var(--muted);
+}
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(55px,10vw,135px);
+  line-height:.92;
+  letter-spacing:-5px;
+  font-weight:500;
+  margin:27px 0;
+}
+.hero-title em{font-weight:400}
+.hero-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:25px;
+}
+.hero-description{
+  color:var(--muted);
+  max-width:380px;
+  font-size:13px;
+  line-height:1.9;
+}
+.hero-index{
+  font-family:'Playfair Display',serif;
+  font-size:40px;
+}
+
+.section-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+  padding:24px 0 13px;
+  margin-bottom:20px;
+}
+.section-heading h2{
+  font-family:'Playfair Display',serif;
+  font-weight:500;
+  font-size:26px;
+  margin:0;
+}
+.section-heading span{
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:2px;
+}
+
+.marquee{
+  width:100%;
+  overflow:hidden;
+  padding:5px 0 35px;
+  mask-image:linear-gradient(90deg,transparent,black 5%,black 95%,transparent);
+}
+.track{
+  display:flex;
+  width:max-content;
+  gap:13px;
+  animation:marquee 48s linear infinite;
+}
 .marquee:hover .track{animation-play-state:paused}
-.slide{width:260px;height:185px;flex:none;overflow:hidden;border-radius:8px;background:#222}
-.slide img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;transition:transform .5s}
+.slide{
+  width:300px;
+  height:220px;
+  flex:none;
+  overflow:hidden;
+  background:#d6d0c4;
+}
+.slide img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .6s;
+  cursor:zoom-in;
+}
 .slide:hover img{transform:scale(1.06)}
-@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-#ownerPanel{display:none;background:var(--panel);border:1px solid #303036;padding:20px;border-radius:12px;margin:25px 0}
-#ownerPanel h3{margin-top:0}
-input,select{background:#0c0c0f;border:1px solid #393940;color:white;padding:12px;border-radius:8px;margin:5px;max-width:100%}
-#status{color:#aaa;font-size:13px;margin-top:12px}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
-.filters button{background:#202025;color:#ccc}
-.filters button.active{background:#eee;color:#111}
-#gallery{columns:4 210px;column-gap:14px}
-.photo{break-inside:avoid;background:#17171b;border-radius:9px;overflow:hidden;margin-bottom:14px}
-.photo img{width:100%;display:block;cursor:zoom-in}
-.caption{padding:12px;font-size:13px;display:flex;justify-content:space-between;gap:8px}
-.caption small{color:#999}
-.delete{margin:0 10px 10px}
-footer{text-align:center;padding:35px;color:#777;border-top:1px solid #252529;margin-top:60px;font-size:11px;letter-spacing:2px}
-#loginPanel,#viewer{display:none;position:fixed;inset:0;background:#000e;z-index:20;place-items:center;padding:20px}
-.loginbox{background:#19191e;padding:25px;border:1px solid #333;border-radius:14px;width:min(380px,100%)}
-.loginbox input{width:100%;margin:8px 0}
-#viewer{z-index:30;cursor:zoom-out}
-#viewer img{max-width:95vw;max-height:90vh;object-fit:contain}
+@keyframes marquee{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+
+.archive{
+  padding:25px 0 70px;
+}
+.archive-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px,7vw,75px);
+  font-weight:500;
+  margin:10px 0 25px;
+  letter-spacing:-2px;
+}
+.filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:25px;
+}
+.filters button{
+  background:transparent;
+  border:1px solid var(--line);
+  padding:9px 15px;
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:var(--ink);
+}
+.filters button.active,
+.filters button:hover{
+  background:var(--ink);
+  color:var(--paper);
+  border-color:var(--ink);
+}
+
+#gallery{
+  columns:4 210px;
+  column-gap:16px;
+}
+.photo{
+  break-inside:avoid;
+  margin:0 0 17px;
+}
+.photo img{
+  display:block;
+  width:100%;
+  cursor:zoom-in;
+  background:#ddd7ca;
+  transition:filter .3s;
+}
+.photo img:hover{filter:brightness(.85)}
+.caption{
+  padding:10px 0;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-size:12px;
+}
+.caption small{
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.delete{
+  background:transparent;
+  border:1px solid #a44;
+  color:#a44;
+  padding:7px 12px;
+  font-size:10px;
+  margin-bottom:10px;
+}
+
+#ownerPanel{
+  display:none;
+  background:#e4dfd4;
+  border:1px solid var(--line);
+  padding:24px;
+  margin:25px 0;
+}
+#ownerPanel h3{
+  font-family:'Playfair Display',serif;
+  font-size:25px;
+  font-weight:500;
+  margin-top:0;
+}
+#uploadForm{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+}
+input,select{
+  background:var(--white);
+  color:var(--ink);
+  border:1px solid var(--line);
+  padding:12px;
+  max-width:100%;
+}
+.action-button{
+  background:var(--ink);
+  color:var(--paper);
+  border:1px solid var(--ink);
+  padding:12px 17px;
+  font-size:10px;
+  letter-spacing:1px;
+}
+.action-button:disabled{opacity:.5}
+#status{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:12px;
+}
+
+footer{
+  border-top:1px solid var(--line);
+  padding:35px 6%;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:15px;
+}
+.footer-logo{
+  font-family:'Playfair Display',serif;
+  font-size:24px;
+}
+footer small{
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+#loginPanel,#viewer{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:#111d;
+  place-items:center;
+  padding:20px;
+}
+.loginbox{
+  width:min(390px,100%);
+  background:var(--paper);
+  padding:30px;
+  border:1px solid var(--line);
+}
+.loginbox h2{
+  font-family:'Playfair Display',serif;
+  font-size:35px;
+  font-weight:500;
+  margin:0 0 5px;
+}
+.loginbox p{
+  color:var(--muted);
+  font-size:11px;
+  letter-spacing:2px;
+}
+.loginbox input{
+  display:block;
+  width:100%;
+  margin:12px 0;
+}
+.loginbox button{width:100%;margin-top:7px}
+#loginStatus{
+  font-size:12px;
+  color:#9b3939;
+  letter-spacing:0;
+}
+#viewer{
+  background:#090909f5;
+  cursor:zoom-out;
+}
+#viewer img{
+  max-width:95vw;
+  max-height:90vh;
+  object-fit:contain;
+}
+.empty{
+  color:var(--muted);
+  font-size:13px;
+  padding:20px 0;
+}
+
 @media(max-width:700px){
- header{padding:18px 5%}
- main{padding:25px 4%}
- h1{letter-spacing:-3px}
- #gallery{columns:2 140px}
- .slide{width:210px;height:155px}
+  header{padding:19px 5%}
+  main{padding:0 5%}
+  .header-note{display:none}
+  .hero{padding-top:55px}
+  .hero-title{letter-spacing:-3px}
+  .hero-bottom{align-items:start}
+  .slide{width:230px;height:175px}
+  #gallery{columns:2 140px}
+  footer{padding:28px 5%}
 }
 @media(prefers-reduced-motion:reduce){
- .track{animation:none}
+  .track{animation:none}
 }
 </style>
 </head>
 
 <body>
+<div class="topline"></div>
+
 <header>
-  <div>
-    <div class="logo">MUTHO PHOTO.</div>
-    <div class="sub">PHOTOGRAPHY PORTFOLIO</div>
+  <a href="#" class="logo">MUTHO <span>PHOTO.</span></a>
+  <div class="header-right">
+    <div class="header-note">INDEPENDENT PHOTOGRAPHY ARCHIVE</div>
+    <button class="owner-button" id="loginBtn">OWNER ACCESS ↗</button>
   </div>
-  <button class="secondary" id="loginBtn">OWNER LOGIN</button>
 </header>
 
 <main>
-  <section class="hero">
-    <div class="eyebrow">WELCOME TO MY WORLD</div>
-    <h1>EVERY FRAME.<br>EVERY STORY.</h1>
-    <p>A collection of moments, places, and stories captured through my lens. Explore the gallery.</p>
-  </section>
+<section class="hero">
+  <div class="eyebrow">VISUAL STORIES · EST. 2026</div>
 
-  <div class="section-title">SELECTED MOMENTS — MOVING GALLERY</div>
-  <section class="marquee">
+  <h1 class="hero-title">
+    The art of<br>
+    <em>capturing life.</em>
+  </h1>
+
+  <div class="hero-bottom">
+    <p class="hero-description">
+      A personal collection of places, people, and fleeting moments.
+      Every photograph tells a story worth remembering.
+    </p>
+    <div class="hero-index">01 — 26</div>
+  </div>
+</section>
+
+<section>
+  <div class="section-heading">
+    <h2>Selected Moments</h2>
+    <span>AN ONGOING COLLECTION</span>
+  </div>
+
+  <div class="marquee">
     <div class="track" id="track"></div>
-  </section>
+  </div>
+</section>
 
-  <section id="ownerPanel">
-    <h3>OWNER DASHBOARD</h3>
-    <form id="uploadForm">
-      <input id="photoFile" type="file" accept="image/*" required>
-      <input id="photoTitle" type="text" placeholder="Photo title" maxlength="80" required>
-      <select id="photoCategory">
-        <option value="Nature">Nature</option>
-        <option value="Street">Street</option>
-        <option value="Portrait">Portrait</option>
-        <option value="Travel">Travel</option>
-        <option value="Other">Other</option>
-      </select>
-      <button id="uploadButton" type="submit">UPLOAD PHOTO</button>
-      <button type="button" class="secondary" id="logoutBtn">LOGOUT</button>
-    </form>
-    <div id="status">Owner mode active.</div>
-  </section>
+<section id="ownerPanel">
+  <h3>Owner Studio</h3>
+  <form id="uploadForm">
+    <input id="photoFile" type="file" accept="image/*" required>
+    <input id="photoTitle" type="text" placeholder="Photo title" maxlength="80" required>
+    <select id="photoCategory">
+      <option value="Nature">Nature</option>
+      <option value="Street">Street</option>
+      <option value="Portrait">Portrait</option>
+      <option value="Travel">Travel</option>
+      <option value="Other">Other</option>
+    </select>
+    <button class="action-button" id="uploadButton" type="submit">
+      UPLOAD PHOTO +
+    </button>
+    <button class="action-button" type="button" id="logoutBtn">
+      LOG OUT
+    </button>
+  </form>
+  <div id="status">Owner mode active.</div>
+</section>
 
-  <div class="section-title">THE COLLECTION</div>
-  <h2>PHOTO ARCHIVE.</h2>
+<section class="archive">
+  <div class="eyebrow">THE PHOTOGRAPHY ARCHIVE</div>
+  <h2 class="archive-title">Collected frames.</h2>
 
   <nav class="filters" id="filters">
-    <button class="active" data-cat="All">ALL</button>
+    <button class="active" data-cat="All">ALL WORKS</button>
     <button data-cat="Nature">NATURE</button>
     <button data-cat="Street">STREET</button>
     <button data-cat="Portrait">PORTRAIT</button>
@@ -112,22 +440,43 @@ footer{text-align:center;padding:35px;color:#777;border-top:1px solid #252529;ma
     <button data-cat="Other">OTHER</button>
   </nav>
 
-  <section id="gallery"><p>Loading gallery...</p></section>
+  <section id="gallery">
+    <p class="empty">Loading collection...</p>
+  </section>
+</section>
 </main>
 
-<footer>MUTHO PHOTO · CAPTURING MOMENTS · 2026</footer>
+<footer>
+  <div class="footer-logo">MUTHO PHOTO.</div>
+  <small>CAPTURING MOMENTS, KEEPING STORIES.</small>
+  <small>© 2026 MUTHO PHOTO</small>
+</footer>
 
 <div id="loginPanel">
   <div class="loginbox">
-    <h2>OWNER LOGIN</h2>
-    <p class="sub">AUTHORIZED ACCESS ONLY</p>
+    <div class="eyebrow">PRIVATE ACCESS</div>
+    <h2>Welcome back.</h2>
+    <p>OWNER STUDIO · AUTHORIZED ACCESS</p>
+
     <form id="loginForm">
-      <input type="email" value="akhtar32132123@gmail.com" readonly>
-      <input id="password" type="password" placeholder="Supabase account password" required>
-      <button type="submit" style="width:100%">LOGIN</button>
-      <button type="button" class="secondary" id="closeLogin" style="width:100%;margin-top:8px">CANCEL</button>
+      <input
+        id="password"
+        type="password"
+        placeholder="Enter your owner password"
+        autocomplete="current-password"
+        required
+      >
+      <button class="action-button" type="submit">
+        SIGN IN ↗
+      </button>
+      <button class="action-button" type="button"
+        id="closeLogin"
+        style="background:transparent;color:#191916">
+        CANCEL
+      </button>
     </form>
-    <p id="loginStatus"></p>
+
+    <div id="loginStatus"></div>
   </div>
 </div>
 
@@ -137,10 +486,15 @@ footer{text-align:center;padding:35px;color:#777;border-top:1px solid #252529;ma
 
 <script>
 // SUPABASE CONFIGURATION
-const SUPABASE_URL = "https://evipwzjdyelahsemvqjv.supabase.co";
-const SUPABASE_KEY = "sb_publishable_O4sRwFbo8YsbYokaH_QeEw_aGzhM3D1";
+const SUPABASE_URL =
+  "https://evipwzjdyelahsemvqjv.supabase.co";
 
-const OWNER_EMAIL = "akhtar32132123@gmail.com";
+const SUPABASE_KEY =
+  "sb_publishable_O4sRwFbo8YsbYokaH_QeEw_aGzhM3D1";
+
+const OWNER_EMAIL =
+  "akhtar32132123@gmail.com";
+
 const BUCKET = "akhtar-photos";
 
 const db = window.supabase.createClient(
@@ -150,7 +504,6 @@ const db = window.supabase.createClient(
 
 let isOwner = false;
 let currentCategory = "All";
-let allPhotos = [];
 
 const gallery = document.getElementById("gallery");
 const track = document.getElementById("track");
@@ -160,26 +513,31 @@ function setStatus(message){
   statusEl.textContent = message;
 }
 
-function escapeHTML(value){
-  return String(value ?? "").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",
-    '"':"&quot;","'":"&#39;"
-  }[c]));
-}
-
 function photoURL(photo){
   if(photo.image_url) return photo.image_url;
-  return db.storage.from(BUCKET)
-    .getPublicUrl(photo.image_path).data.publicUrl;
+
+  return db.storage
+    .from(BUCKET)
+    .getPublicUrl(photo.image_path)
+    .data.publicUrl;
 }
 
-// INFINITE PHOTO SLIDER
+// PHOTO VIEWER
+function openViewer(url){
+  document.getElementById("viewerImg").src = url;
+  document.getElementById("viewer").style.display = "grid";
+}
+
+document.getElementById("viewer").onclick = ()=>{
+  document.getElementById("viewer").style.display = "none";
+};
+
+// INFINITE SLIDER
 function renderSlider(photos){
   track.innerHTML = "";
 
   if(!photos.length) return;
 
-  // Dua set foto supaya animasi looping mulus.
   const repeated = [...photos,...photos];
 
   repeated.forEach((photo,index)=>{
@@ -191,19 +549,16 @@ function renderSlider(photos){
     img.alt = photo.title || "Mutho Photo";
     img.loading = index < photos.length ? "eager" : "lazy";
 
-    img.onclick = ()=>{
-      document.getElementById("viewerImg").src = img.src;
-      document.getElementById("viewer").style.display = "grid";
-    };
+    img.onclick = ()=>openViewer(img.src);
 
     slide.appendChild(img);
     track.appendChild(slide);
   });
 }
 
-// LOAD PHOTOS FROM SUPABASE
+// LOAD PHOTOS
 async function loadPhotos(){
-  gallery.innerHTML = "<p>Loading photos...</p>";
+  gallery.innerHTML = '<p class="empty">Loading collection...</p>';
 
   let query = db.from("photos")
     .select("*")
@@ -217,25 +572,28 @@ async function loadPhotos(){
 
   if(error){
     gallery.innerHTML =
-      "<p>Gagal mengambil foto dari Supabase: "+
-      escapeHTML(error.message)+"</p>";
+      '<p class="empty">Unable to load collection: ' +
+      error.message + '</p>';
     console.error(error);
     return;
   }
 
-  allPhotos = data || [];
+  const photos = data || [];
 
-  // Slider memakai semua foto yang tersedia.
-  renderSlider(allPhotos);
+  // Slider uses all photos, regardless of active filter.
+  if(currentCategory === "All"){
+    renderSlider(photos);
+  }
 
   gallery.innerHTML = "";
 
-  if(!allPhotos.length){
-    gallery.innerHTML = "<p>Belum ada foto di kategori ini.</p>";
+  if(!photos.length){
+    gallery.innerHTML =
+      '<p class="empty">No photographs in this collection yet.</p>';
     return;
   }
 
-  allPhotos.forEach(photo=>{
+  photos.forEach(photo=>{
     const card = document.createElement("article");
     card.className = "photo";
 
@@ -243,11 +601,7 @@ async function loadPhotos(){
     img.src = photoURL(photo);
     img.alt = photo.title || "Mutho Photo";
     img.loading = "lazy";
-
-    img.onclick = ()=>{
-      document.getElementById("viewerImg").src = img.src;
-      document.getElementById("viewer").style.display = "grid";
-    };
+    img.onclick = ()=>openViewer(img.src);
 
     const caption = document.createElement("div");
     caption.className = "caption";
@@ -263,8 +617,8 @@ async function loadPhotos(){
 
     if(isOwner){
       const del = document.createElement("button");
+      del.className = "delete";
       del.textContent = "DELETE PHOTO";
-      del.className = "secondary delete";
       del.onclick = ()=>deletePhoto(photo);
       card.appendChild(del);
     }
@@ -273,7 +627,7 @@ async function loadPhotos(){
   });
 }
 
-// UPLOAD PHOTO
+// UPLOAD
 document.getElementById("uploadForm")
 .addEventListener("submit",async function(e){
   e.preventDefault();
@@ -283,7 +637,7 @@ document.getElementById("uploadForm")
   const file = document.getElementById("photoFile").files[0];
   const title = document.getElementById("photoTitle").value.trim();
   const category = document.getElementById("photoCategory").value;
-  const uploadButton = document.getElementById("uploadButton");
+  const button = document.getElementById("uploadButton");
 
   if(!file || !file.type.startsWith("image/")){
     setStatus("Please select a valid image.");
@@ -293,19 +647,23 @@ document.getElementById("uploadForm")
   const extension = (file.name.split(".").pop() || "jpg")
     .toLowerCase().replace(/[^a-z0-9]/g,"");
 
-  const path = Date.now()+"-"+crypto.randomUUID()+"."+extension;
+  const path =
+    Date.now()+"-"+crypto.randomUUID()+"."+extension;
 
-  uploadButton.disabled = true;
-  setStatus("Uploading photo...");
+  button.disabled = true;
+  setStatus("Uploading photograph...");
 
   try{
     const {error:uploadError} = await db.storage
       .from(BUCKET)
-      .upload(path,file,{contentType:file.type});
+      .upload(path,file,{
+        contentType:file.type
+      });
 
     if(uploadError) throw uploadError;
 
-    const publicUrl = db.storage.from(BUCKET)
+    const publicUrl = db.storage
+      .from(BUCKET)
       .getPublicUrl(path).data.publicUrl;
 
     const {error:insertError} = await db.from("photos")
@@ -322,22 +680,23 @@ document.getElementById("uploadForm")
     }
 
     this.reset();
-    setStatus("Photo uploaded successfully!");
+    setStatus("Photograph uploaded successfully.");
     await loadPhotos();
 
   }catch(error){
     setStatus("Upload failed: "+error.message);
   }finally{
-    uploadButton.disabled = false;
+    button.disabled = false;
   }
 });
 
-// DELETE PHOTO
+// DELETE
 async function deletePhoto(photo){
-  if(!confirm("Are you sure you want to delete this photo?")) return;
+  if(!confirm("Delete this photograph?")) return;
 
   const {error} = await db.from("photos")
-    .delete().eq("id",photo.id);
+    .delete()
+    .eq("id",photo.id);
 
   if(error){
     alert("Delete failed: "+error.message);
@@ -345,10 +704,14 @@ async function deletePhoto(photo){
   }
 
   if(photo.image_path){
-    const result = await db.storage.from(BUCKET)
+    const result = await db.storage
+      .from(BUCKET)
       .remove([photo.image_path]);
 
-    if(result.error) console.error(result.error);
+    if(result.error){
+      console.error(result.error);
+      alert("Photo record deleted, but storage cleanup failed.");
+    }
   }
 
   await loadPhotos();
@@ -368,7 +731,7 @@ document.getElementById("loginForm")
   e.preventDefault();
 
   const msg = document.getElementById("loginStatus");
-  msg.textContent = "Checking account...";
+  msg.textContent = "Checking credentials...";
 
   const {data,error} = await db.auth.signInWithPassword({
     email:OWNER_EMAIL,
@@ -376,18 +739,20 @@ document.getElementById("loginForm")
   });
 
   if(error){
-    msg.textContent = "Login failed: "+error.message;
+    msg.textContent = "Login failed. Check your password.";
+    console.error(error);
     return;
   }
 
   if(data.user.email?.toLowerCase() !== OWNER_EMAIL){
     await db.auth.signOut();
-    msg.textContent = "This account is not the owner.";
+    msg.textContent = "Unauthorized account.";
     return;
   }
 
   document.getElementById("loginPanel").style.display = "none";
   document.getElementById("password").value = "";
+
   updateOwner(true);
 });
 
@@ -405,11 +770,11 @@ function updateOwner(value){
   document.getElementById("loginBtn").style.display =
     value ? "none" : "inline-block";
 
-  setStatus(value ? "Owner mode active." : "");
+  setStatus(value ? "Owner studio active." : "");
   loadPhotos();
 }
 
-// CATEGORY FILTER
+// FILTERS
 document.querySelectorAll("#filters button")
 .forEach(button=>{
   button.onclick = ()=>{
@@ -422,12 +787,7 @@ document.querySelectorAll("#filters button")
   };
 });
 
-// IMAGE VIEWER
-document.getElementById("viewer").onclick = ()=>{
-  document.getElementById("viewer").style.display = "none";
-};
-
-// CHECK LOGIN SESSION
+// CHECK SESSION
 db.auth.getSession().then(({data,error})=>{
   if(error) console.error(error);
 
