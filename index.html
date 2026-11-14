@@ -1,185 +1,352 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b0d10">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Akhtar Photography</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--bg:#0b0d10;--panel:#13181e;--muted:#929ba5;--text:#f3f4f5;--line:#283039;--gold:#d7b98a;--red:#e87979}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif}button,input,select{font:inherit}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 36px));margin:auto}
-header{height:74px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.brand{font-size:13px;font-weight:700;letter-spacing:.18em}.brand b{color:var(--gold)}nav{display:flex;gap:24px;font-size:12px;color:#c4cbd2}nav a:hover{color:var(--gold)}
-.hero{padding:78px 0 62px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}.eyebrow{color:var(--gold);font-size:10px;letter-spacing:.23em;text-transform:uppercase;font-weight:700}h1,h2,.photo-title{font-family:"Playfair Display",serif;font-weight:500}h1{font-size:clamp(48px,7vw,82px);line-height:1.02;margin:16px 0}h1 em{color:var(--gold)}.hero p,.about p{color:var(--muted);line-height:1.85;font-size:14px;max-width:490px}.hero-image{height:390px;overflow:hidden}.hero-image img{width:100%;height:100%;object-fit:cover;filter:brightness(.78)}.btn{border:1px solid var(--gold);background:var(--gold);color:#151515;padding:11px 16px;font-size:11px;font-weight:700;cursor:pointer}.btn.ghost{background:transparent;color:var(--text);border-color:#47515b}.btn.danger{background:transparent;color:var(--red);border-color:#744444}.btn:disabled{opacity:.5;cursor:wait}.hero-actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
-.section-head{display:flex;justify-content:space-between;align-items:end;margin:20px 0 22px;gap:16px}h2{font-size:38px;margin:8px 0 0}.sub{font-size:11px;color:var(--muted)}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}.filters{display:flex;gap:7px;flex-wrap:wrap}.filter{border:1px solid var(--line);background:none;color:#b5bec7;padding:8px 12px;font-size:10px;cursor:pointer}.filter.active,.filter:hover{color:var(--gold);border-color:var(--gold)}.gallery{columns:3 240px;column-gap:15px}.photo{break-inside:avoid;position:relative;margin:0 0 15px;background:var(--panel);overflow:hidden}.photo img{display:block;width:100%;height:auto;cursor:zoom-in;transition:transform .4s}.photo:hover img{transform:scale(1.025)}.photo-info{padding:12px 13px;display:flex;justify-content:space-between;align-items:center;gap:10px}.photo-title{font-size:17px}.photo-cat{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.delete{border:1px solid #704747;color:#ffaaaa;background:#241719;padding:6px 9px;font-size:10px;cursor:pointer;display:none}.admin .delete{display:block}.empty{padding:55px 15px;border:1px dashed var(--line);text-align:center;color:var(--muted);font-size:13px}.about{margin:90px 0;padding:35px;border:1px solid var(--line);display:grid;grid-template-columns:.6fr 1.4fr;gap:35px;align-items:center;background:#101419}.mark{text-align:center;color:var(--gold);font:70px "Playfair Display",serif}.about h2{font-size:32px}.adminbar{display:none;margin:18px 0;padding:15px;border:1px solid #4e493d;background:#171711;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.admin .adminbar{display:flex}.admin-status{font-size:11px;color:var(--gold)}.upload-label{display:inline-block;background:var(--gold);color:#171717;padding:10px 14px;font-size:11px;font-weight:700;cursor:pointer}#fileInput{display:none}
-footer{border-top:1px solid var(--line);padding:24px 0 34px;color:#78828c;font-size:10px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.modal,.lightbox{position:fixed;inset:0;background:#050608eF;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.open,.lightbox.open{display:flex}.dialog{width:min(420px,100%);background:#14191f;border:1px solid var(--line);padding:25px}.dialog h3{font:26px "Playfair Display",serif;margin:0 0 8px}.dialog p{font-size:12px;color:var(--muted);line-height:1.6}.field{width:100%;padding:12px;margin:7px 0 12px;background:#0b0e12;border:1px solid #343d47;color:white}.dialog-actions{display:flex;gap:9px;flex-wrap:wrap}.notice{font-size:11px;color:var(--muted);min-height:18px;margin:8px 0}.lightbox img{max-width:92vw;max-height:82vh;object-fit:contain}.lightbox button{position:absolute;top:18px;right:18px;background:#15191e;color:white;border:1px solid #66707a;padding:10px 15px;cursor:pointer}
-@media(max-width:700px){.wrap{width:calc(100% - 28px)}header{height:64px}nav{gap:13px;font-size:10px}.hero{grid-template-columns:1fr;padding:55px 0 45px;gap:25px}.hero-image{height:270px}.section-head{align-items:start;flex-direction:column}h2{font-size:33px}.about{grid-template-columns:1fr;padding:24px;margin:65px 0;gap:10px}.mark{font-size:55px}.about h2{font-size:29px}.gallery{columns:2 145px;column-gap:10px}.photo{margin-bottom:10px}.photo-info{padding:9px}.photo-title{font-size:14px}}
+*{box-sizing:border-box}
+body{margin:0;background:#0b0b0d;color:#f5f5f5;font-family:Arial,sans-serif}
+header{padding:25px 6%;border-bottom:1px solid #292929;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:22px;font-weight:bold;letter-spacing:3px}
+main{max-width:1400px;margin:auto;padding:35px 5%}
+h1{font-size:clamp(42px,7vw,75px);margin:15px 0}
+p{color:#aaa;line-height:1.6}
+button{border:0;border-radius:25px;padding:11px 18px;background:#eee;color:#111;font-weight:bold;cursor:pointer}
+button.secondary{background:#292929;color:white}
+.hero{margin-bottom:30px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:25px 0}
+.filters button{background:#202024;color:#ddd}
+.filters button.active{background:#eee;color:#111}
+#gallery{columns:4 210px;column-gap:14px}
+.photo{break-inside:avoid;background:#17171b;border-radius:10px;overflow:hidden;margin-bottom:14px}
+.photo img{width:100%;display:block;cursor:zoom-in}
+.caption{padding:12px;font-size:13px;display:flex;justify-content:space-between;gap:8px}
+.caption small{color:#aaa}
+#ownerPanel{display:none;background:#18181c;padding:20px;border-radius:12px;margin-bottom:25px}
+input,select{background:#101014;color:white;border:1px solid #444;padding:12px;border-radius:8px;margin:5px;max-width:100%}
+#status{color:#aaa;font-size:13px;margin-top:12px}
+#loginPanel,#viewer{display:none;position:fixed;inset:0;background:#000d;z-index:10;place-items:center;padding:20px}
+.loginbox{background:#19191e;padding:25px;border-radius:15px;width:min(380px,100%)}
+.loginbox input{width:100%;margin:8px 0}
+#viewer{z-index:20;cursor:zoom-out}
+#viewer img{max-width:95vw;max-height:90vh;object-fit:contain}
+footer{text-align:center;padding:30px;color:#777;border-top:1px solid #292929}
+@media(max-width:700px){#gallery{columns:2 140px}header{padding:20px}}
 </style>
 </head>
-<body>
-<header class="wrap">
-  <a class="brand" href="#"><b>AKHTAR</b> PHOTOGRAPHY</a>
-  <nav><a href="#gallery">Gallery</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
-</header>
-<main class="wrap">
-  <section class="hero">
-    <div><div class="eyebrow">Photography portfolio · Indonesia</div>
-      <h1>Moments<br>in <em>frames.</em></h1>
-      <p>Ruang untuk menyimpan cerita dalam cahaya, warna, dan sudut pandang. Selamat datang di galeri fotografi saya.</p>
-      <div class="hero-actions"><a class="btn" href="#gallery">JELAJAHI GALERI</a><a class="btn ghost" href="#about">TENTANG SAYA</a></div>
-    </div>
-    <div class="hero-image"><img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=85" alt="Pemandangan pegunungan"></div>
-  </section>
-  <section id="gallery">
-    <div class="section-head"><div><div class="eyebrow">Selected works</div><h2>Photo gallery</h2></div><div class="sub">Foto yang kamu unggah akan tampil di sini.</div></div>
-    <div class="adminbar" id="adminbar">
-      <span class="admin-status">ADMIN MODE AKTIF · hanya akun pemilik dapat mengelola foto</span>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <label class="upload-label" for="fileInput">＋ Upload foto</label>
-        <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple>
-        <button class="btn ghost" id="logoutBtn">Keluar</button>
-      </div>
-    </div>
-    <div class="toolbar"><div class="filters" id="filters">
-      <button class="filter active" data-filter="all">Semua</button>
-      <button class="filter" data-filter="nature">Nature</button>
-      <button class="filter" data-filter="street">Street</button>
-      <button class="filter" data-filter="architecture">Architecture</button>
-      <button class="filter" data-filter="travel">Travel</button>
-      <button class="filter" data-filter="other">Lainnya</button>
-    </div><button class="btn ghost" id="loginBtn">Login pemilik</button></div>
-    <div class="gallery" id="galleryGrid"></div>
-    <div class="empty" id="empty">Belum ada foto. Pemilik website dapat login untuk mengunggah foto pertama.</div>
-  </section>
-  <section class="about" id="about"><div class="mark">AP.</div><div><div class="eyebrow">Behind the lens</div><h2>About the photographer</h2>
-    <p>Halo, saya Akhtar. Saya menikmati proses menangkap momen dan melihat cerita dari sudut pandang yang berbeda. Website ini menjadi tempat untuk mengumpulkan karya fotografi, eksplorasi visual, dan momen-momen favorit.</p>
-    <p>Setiap foto punya cerita. Terima kasih sudah mampir dan melihat karya saya.</p></div></section>
-</main>
-<footer class="wrap" id="contact"><span>© <span id="year"></span> AKHTAR PHOTOGRAPHY</span><span>Made with passion · Indonesia</span><a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram ↗</a></footer>
 
-<div class="modal" id="loginModal"><div class="dialog">
-  <h3>Login pemilik</h3><p>Masuk menggunakan akun pemilik yang dibuat di Supabase. Pengunjung biasa tidak dapat mengunggah atau menghapus foto.</p>
-  <form id="loginForm"><label class="sub" for="email">Email</label><input class="field" id="email" type="email" autocomplete="username" required placeholder="email pemilik">
-  <label class="sub" for="password">Password</label><input class="field" id="password" type="password" autocomplete="current-password" required placeholder="password">
-  <div class="dialog-actions"><button class="btn" type="submit">Login</button><button class="btn ghost" type="button" id="cancelLogin">Batal</button></div></form>
-  <div class="notice" id="loginNotice"></div>
-</div></div>
-<div class="lightbox" id="lightbox"><button id="closeLightbox">Tutup ✕</button><img id="lightboxImg" alt="Foto diperbesar"></div>
+<body>
+<header>
+  <div>
+    <div class="brand">AKHTAR PHOTOGRAPHY</div>
+    <small style="color:#888;letter-spacing:2px">STORIES THROUGH MY LENS</small>
+  </div>
+  <button class="secondary" id="loginBtn">Owner Login</button>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Moments.<br>In Frames.</h1>
+    <p>Kumpulan foto, cerita, dan momen yang ingin aku abadikan.</p>
+  </section>
+
+  <section id="ownerPanel">
+    <h3>Panel Pemilik</h3>
+    <form id="uploadForm">
+      <input id="photoFile" type="file" accept="image/*" required>
+      <input id="photoTitle" placeholder="Judul foto" maxlength="80" required>
+      <select id="photoCategory">
+        <option>Nature</option>
+        <option>Street</option>
+        <option>Portrait</option>
+        <option>Travel</option>
+        <option>Other</option>
+      </select>
+      <button type="submit">Upload Foto</button>
+      <button type="button" class="secondary" id="logoutBtn">Logout</button>
+    </form>
+    <div id="status"></div>
+  </section>
+
+  <nav class="filters" id="filters">
+    <button class="active" data-cat="All">All</button>
+    <button data-cat="Nature">Nature</button>
+    <button data-cat="Street">Street</button>
+    <button data-cat="Portrait">Portrait</button>
+    <button data-cat="Travel">Travel</button>
+    <button data-cat="Other">Other</button>
+  </nav>
+
+  <section id="gallery">Memuat galeri...</section>
+</main>
+
+<footer>© 2026 Akhtar Photography</footer>
+
+<div id="loginPanel">
+  <div class="loginbox">
+    <h2>Owner Login</h2>
+    <p>Login khusus pemilik website.</p>
+    <form id="loginForm">
+      <input type="email" value="akhtar32132123@gmail.com" readonly>
+      <input id="password" type="password" placeholder="Password Supabase" required>
+      <button type="submit" style="width:100%">Login</button>
+      <button type="button" class="secondary" id="closeLogin" style="width:100%;margin-top:8px">Batal</button>
+    </form>
+    <p id="loginStatus"></p>
+  </div>
+</div>
+
+<div id="viewer">
+  <img id="viewerImg" alt="Foto">
+</div>
 
 <script>
-/* Isi dua nilai ini setelah membuat project Supabase. Jangan masukkan password akun di sini. */
-const SUPABASE_URL = "PASTE_PROJECT_URL_DI_SINI";
-const SUPABASE_ANON_KEY = "PASTE_ANON_PUBLIC_KEY_DI_SINI";
-const BUCKET = "akhtar-photos";
-let db = null, isOwner = false, activeFilter = "all", photos = [];
-
-const grid = document.getElementById("galleryGrid");
-const empty = document.getElementById("empty");
-const loginModal = document.getElementById("loginModal");
-const loginNotice = document.getElementById("loginNotice");
-
-function configured(){
-  return SUPABASE_URL.startsWith("https://") && !SUPABASE_ANON_KEY.includes("PASTE_");
-}
-function message(text){ loginNotice.textContent = text; }
-async function init(){
-  document.getElementById("year").textContent = new Date().getFullYear();
-  if(!configured() || !window.supabase){
-    empty.textContent = "Galeri belum dihubungkan ke Supabase. Ikuti PETUNJUK-SETUP.txt untuk mengaktifkan penyimpanan foto.";
-    empty.style.display = "block";
-    document.getElementById("loginBtn").disabled = true;
-    return;
-  }
-  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const {data:{session}} = await db.auth.getSession();
-  isOwner = !!session;
-  updateAdmin();
-  db.auth.onAuthStateChange((_event, session) => { isOwner=!!session; updateAdmin(); loadPhotos(); });
-  await loadPhotos();
-}
-function updateAdmin(){
-  document.body.classList.toggle("admin", isOwner);
-  document.getElementById("loginBtn").style.display = isOwner ? "none" : "inline-block";
-}
-async function loadPhotos(){
-  if(!db) return;
-  const {data,error} = await db.from("photos").select("*").order("created_at",{ascending:false});
-  if(error){ empty.textContent = "Gagal memuat galeri: "+error.message; empty.style.display="block"; return; }
-  photos = data || []; render();
-}
-function render(){
-  grid.innerHTML = "";
-  const shown = photos.filter(p => activeFilter==="all" || p.category===activeFilter);
-  shown.forEach(photo => {
-    const figure = document.createElement("figure"); figure.className="photo";
-    const img = document.createElement("img"); img.src=photo.image_url; img.alt=photo.title || "Foto Akhtar"; img.loading="lazy";
-    img.addEventListener("click",()=>{document.getElementById("lightboxImg").src=photo.image_url;document.getElementById("lightbox").classList.add("open");});
-    const info = document.createElement("figcaption"); info.className="photo-info";
-    const details=document.createElement("div");
-    const title=document.createElement("div");title.className="photo-title";title.textContent=photo.title || "Untitled";
-    const cat=document.createElement("div");cat.className="photo-cat";cat.textContent=photo.category;
-    details.append(title,cat);info.append(details);
-    if(isOwner){const del=document.createElement("button");del.className="delete";del.textContent="Hapus";del.addEventListener("click",()=>deletePhoto(photo));info.append(del);}
-    figure.append(img,info);grid.append(figure);
-  });
-  empty.style.display = shown.length ? "none" : "block";
-  if(!shown.length) empty.textContent = photos.length ? "Belum ada foto di kategori ini." : "Belum ada foto. Pemilik website dapat login untuk mengunggah foto pertama.";
-}
-document.getElementById("filters").addEventListener("click",e=>{
-  const b=e.target.closest("[data-filter]");if(!b)return;
-  activeFilter=b.dataset.filter;
-  document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x===b));render();
-});
-document.getElementById("loginBtn").addEventListener("click",()=>{loginModal.classList.add("open");message("");});
-document.getElementById("cancelLogin").addEventListener("click",()=>loginModal.classList.remove("open"));
-document.getElementById("loginForm").addEventListener("submit",async e=>{
-  e.preventDefault();if(!db)return;
-  message("Sedang login...");
-  const {error}=await db.auth.signInWithPassword({email:document.getElementById("email").value,password:document.getElementById("password").value});
-  if(error){message("Login gagal: "+error.message);return;}
-  loginModal.classList.remove("open");e.target.reset();
-});
-document.getElementById("logoutBtn").addEventListener("click",async()=>{if(db)await db.auth.signOut();});
-document.getElementById("fileInput").addEventListener("change",async e=>{
-  if(!isOwner || !db){alert("Hanya pemilik yang dapat upload.");return;}
-  const files=[...e.target.files];e.target.value="";
-  for(const file of files){
-    if(!["image/jpeg","image/png","image/webp"].includes(file.type)){alert("Gunakan JPG, PNG, atau WEBP.");continue;}
-    const safeName=file.name.toLowerCase().replace(/[^a-z0-9._-]/g,"-");
-    const path=crypto.randomUUID()+"-"+safeName;
-    const {error:uploadError}=await db.storage.from(BUCKET).upload(path,file,{ upsert:false, contentType:file.type });
-    if(uploadError){alert("Upload gagal: "+uploadError.message);continue;}
-    const {data:{publicUrl}}=db.storage.from(BUCKET).getPublicUrl(path);
-    const title=prompt("Judul foto:",file.name.replace(/\.[^.]+$/,"")) || file.name;
-    const category=(prompt("Kategori: nature / street / architecture / travel / other","nature") || "other").toLowerCase();
-    const allowed=["nature","street","architecture","travel","other"];
-    const {error:insertError}=await db.from("photos").insert({title,category:allowed.includes(category)?category:"other",image_path:path,image_url:publicUrl});
-    if(insertError){await db.storage.from(BUCKET).remove([path]);alert("Gagal menyimpan data: "+insertError.message);}
-  }
-  await loadPhotos();
-});
-async function deletePhoto(photo){
-  if(!isOwner || !confirm('Hapus foto "'+(photo.title||"ini")+'" dari galeri?'))return;
-  const {error:rowError}=await db.from("photos").delete().eq("id",photo.id);
-  if(rowError){alert("Tidak bisa menghapus: "+rowError.message);return;}
-  const {error:fileError}=await db.storage.from(BUCKET).remove([photo.image_path]);
-  if(fileError)alert("Foto di galeri terhapus, tetapi file penyimpanan perlu dibersihkan: "+fileError.message);
-  await loadPhotos();
-}
-document.getElementById("closeLightbox").addEventListener("click",()=>document.getElementById("lightbox").classList.remove("open"));
-document.getElementById("lightbox").addEventListener("click",e=>{if(e.target.id==="lightbox")e.currentTarget.classList.remove("open");});
-init();
-</script>
-</body>
-</html>
+// KONEKSI SUPABASE
 const SUPABASE_URL = "https://evipwzjdyelahsemvqjv.supabase.co";
-
 const SUPABASE_KEY = "sb_publishable_O4sRwFbo8YsbYokaH_QeEw_aGzhM3D1";
+
+const OWNER_EMAIL = "akhtar32132123@gmail.com";
+const BUCKET = "akhtar-photos";
 
 const db = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+
+let isOwner = false;
+let currentCategory = "All";
+
+const gallery = document.getElementById("gallery");
+const statusEl = document.getElementById("status");
+
+function setStatus(message){
+  statusEl.textContent = message;
+}
+
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+// MEMUAT FOTO
+async function loadPhotos(){
+  gallery.innerHTML = "<p>Memuat foto...</p>";
+
+  let query = db.from("photos")
+    .select("*")
+    .order("created_at", {ascending:false});
+
+  if(currentCategory !== "All"){
+    query = query.eq("category", currentCategory);
+  }
+
+  const {data,error} = await query;
+
+  if(error){
+    gallery.innerHTML = "<p>Galeri gagal dimuat. Periksa konfigurasi Supabase.</p>";
+    console.error(error);
+    return;
+  }
+
+  gallery.innerHTML = "";
+
+  if(!data || data.length === 0){
+    gallery.innerHTML = "<p>Belum ada foto di kategori ini.</p>";
+    return;
+  }
+
+  data.forEach(photo => {
+    const url = photo.image_url ||
+      db.storage.from(BUCKET).getPublicUrl(photo.image_path).data.publicUrl;
+
+    const card = document.createElement("article");
+    card.className = "photo";
+
+    card.innerHTML = `
+      <img loading="lazy"
+        src="${escapeHTML(url)}"
+        alt="${escapeHTML(photo.title)}">
+      <div class="caption">
+        <span>${escapeHTML(photo.title)}</span>
+        <small>${escapeHTML(photo.category)}</small>
+      </div>
+    `;
+
+    card.querySelector("img").onclick = () => {
+      document.getElementById("viewerImg").src = url;
+      document.getElementById("viewer").style.display = "grid";
+    };
+
+    if(isOwner){
+      const del = document.createElement("button");
+      del.textContent = "Hapus Foto";
+      del.className = "secondary";
+      del.style.margin = "0 10px 10px";
+      del.onclick = () => deletePhoto(photo);
+      card.appendChild(del);
+    }
+
+    gallery.appendChild(card);
+  });
+}
+
+// UPLOAD FOTO
+document.getElementById("uploadForm").onsubmit = async function(e){
+  e.preventDefault();
+
+  if(!isOwner) return;
+
+  const file = document.getElementById("photoFile").files[0];
+  const title = document.getElementById("photoTitle").value.trim();
+  const category = document.getElementById("photoCategory").value;
+
+  if(!file || !file.type.startsWith("image/")){
+    setStatus("Pilih file gambar yang valid.");
+    return;
+  }
+
+  const extension = (file.name.split(".").pop() || "jpg")
+    .toLowerCase().replace(/[^a-z0-9]/g,"");
+
+  const path = Date.now() + "-" +
+    crypto.randomUUID() + "." + extension;
+
+  setStatus("Sedang mengupload foto...");
+
+  const {error:uploadError} = await db.storage
+    .from(BUCKET)
+    .upload(path,file,{contentType:file.type});
+
+  if(uploadError){
+    setStatus("Upload gagal: " + uploadError.message);
+    return;
+  }
+
+  const publicUrl = db.storage.from(BUCKET)
+    .getPublicUrl(path).data.publicUrl;
+
+  const {error:insertError} = await db.from("photos").insert({
+    title:title,
+    category:category,
+    image_path:path,
+    image_url:publicUrl
+  });
+
+  if(insertError){
+    await db.storage.from(BUCKET).remove([path]);
+    setStatus("Gagal menyimpan foto: " + insertError.message);
+    return;
+  }
+
+  this.reset();
+  setStatus("Foto berhasil diupload!");
+  loadPhotos();
+};
+
+// HAPUS FOTO
+async function deletePhoto(photo){
+  if(!confirm("Yakin ingin menghapus foto ini?")) return;
+
+  const {error} = await db.from("photos")
+    .delete().eq("id",photo.id);
+
+  if(error){
+    alert("Gagal menghapus: " + error.message);
+    return;
+  }
+
+  if(photo.image_path){
+    const result = await db.storage.from(BUCKET)
+      .remove([photo.image_path]);
+
+    if(result.error) console.error(result.error);
+  }
+
+  loadPhotos();
+}
+
+// LOGIN PEMILIK
+document.getElementById("loginBtn").onclick = () => {
+  document.getElementById("loginPanel").style.display = "grid";
+};
+
+document.getElementById("closeLogin").onclick = () => {
+  document.getElementById("loginPanel").style.display = "none";
+};
+
+document.getElementById("loginForm").onsubmit = async function(e){
+  e.preventDefault();
+
+  const msg = document.getElementById("loginStatus");
+  msg.textContent = "Memeriksa akun...";
+
+  const {data,error} = await db.auth.signInWithPassword({
+    email:OWNER_EMAIL,
+    password:document.getElementById("password").value
+  });
+
+  if(error){
+    msg.textContent = "Login gagal: " + error.message;
+    return;
+  }
+
+  if(data.user.email.toLowerCase() !== OWNER_EMAIL){
+    await db.auth.signOut();
+    msg.textContent = "Akun bukan pemilik.";
+    return;
+  }
+
+  document.getElementById("loginPanel").style.display = "none";
+  document.getElementById("password").value = "";
+  updateOwner(true);
+};
+
+document.getElementById("logoutBtn").onclick = async () => {
+  await db.auth.signOut();
+  updateOwner(false);
+};
+
+function updateOwner(value){
+  isOwner = value;
+  document.getElementById("ownerPanel").style.display =
+    value ? "block" : "none";
+  document.getElementById("loginBtn").style.display =
+    value ? "none" : "inline-block";
+
+  setStatus(value ? "Login sebagai pemilik. Kamu bisa mengelola foto." : "");
+  loadPhotos();
+}
+
+// FILTER KATEGORI
+document.querySelectorAll("#filters button").forEach(button => {
+  button.onclick = () => {
+    document.querySelectorAll("#filters button")
+      .forEach(b => b.classList.remove("active"));
+
+    button.classList.add("active");
+    currentCategory = button.dataset.cat;
+    loadPhotos();
+  };
+});
+
+// PERBESAR FOTO
+document.getElementById("viewer").onclick = () => {
+  document.getElementById("viewer").style.display = "none";
+};
+
+// CEK SESSION
+db.auth.getSession().then(({data}) => {
+  const user = data.session?.user;
+  updateOwner(
+    !!user && user.email?.toLowerCase() === OWNER_EMAIL
+  );
+});
+</script>
+</body>
+</html>
