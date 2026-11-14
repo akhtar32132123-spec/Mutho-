@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#eeeae1">
+<meta name="theme-color" content="#080912">
 <title>MUTHO PHOTO — Visual Stories</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,33 +14,43 @@
 
 <style>
 :root {
-  --paper:#eeeae1;
-  --ink:#191916;
-  --muted:#77766e;
-  --line:#cbc6ba;
-  --white:#fffdf8;
+  --paper:#080912;
+  --ink:#f5f7ff;
+  --muted:#9295ad;
+  --line:#292d43;
+  --white:#111426;
+  --cyan:#00eaff;
+  --purple:#9b5cff;
 }
 
 * {box-sizing:border-box}
 html {scroll-behavior:smooth}
 body {
   margin:0;
-  background:var(--paper);
+  background:
+    radial-gradient(ellipse at 50% 20%,#171333 0%,#080912 65%);
   color:var(--ink);
   font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
 }
 button,input,select {font:inherit}
 button {cursor:pointer}
 a {color:inherit;text-decoration:none}
 
-.topline {height:5px;background:var(--ink)}
+.topline {
+  height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple),var(--cyan));
+  box-shadow:0 0 18px var(--cyan);
+}
 
 header {
-  padding:24px 6%;
+  padding:23px 6%;
   display:flex;
   justify-content:space-between;
   align-items:center;
   border-bottom:1px solid var(--line);
+  background:#080912bb;
+  backdrop-filter:blur(15px);
 }
 .logo {
   font-family:'Playfair Display',serif;
@@ -48,7 +58,12 @@ header {
   font-weight:700;
   letter-spacing:1px;
 }
-.logo span {font-style:italic;font-weight:400}
+.logo span {
+  color:var(--cyan);
+  font-style:italic;
+  font-weight:400;
+  text-shadow:0 0 15px #00eaff77;
+}
 .header-right {
   display:flex;
   gap:25px;
@@ -60,16 +75,19 @@ header {
   letter-spacing:2px;
 }
 .owner-button {
-  border:1px solid var(--ink);
-  color:var(--ink);
+  color:var(--cyan);
+  border:1px solid var(--cyan);
   background:transparent;
-  padding:10px 17px;
+  padding:11px 17px;
   font-size:10px;
   letter-spacing:2px;
+  transition:.3s;
+  box-shadow:0 0 12px #00eaff22;
 }
 .owner-button:hover {
-  background:var(--ink);
-  color:var(--paper);
+  background:var(--cyan);
+  color:#080912;
+  box-shadow:0 0 25px #00eaff88;
 }
 
 main {
@@ -77,14 +95,16 @@ main {
   margin:auto;
   padding:0 6%;
 }
+
 .hero {
-  padding:75px 0 45px;
+  padding:85px 0 50px;
   border-bottom:1px solid var(--line);
 }
 .eyebrow {
   font-size:10px;
   letter-spacing:4px;
-  color:var(--muted);
+  color:var(--cyan);
+  text-transform:uppercase;
 }
 .hero-title {
   font-family:'Playfair Display',serif;
@@ -92,9 +112,13 @@ main {
   line-height:.92;
   letter-spacing:-5px;
   font-weight:500;
-  margin:27px 0;
+  margin:28px 0;
+  text-shadow:0 0 35px #9b5cff22;
 }
-.hero-title em {font-weight:400}
+.hero-title em {
+  font-weight:400;
+  color:#bca2ff;
+}
 .hero-bottom {
   display:flex;
   justify-content:space-between;
@@ -103,13 +127,15 @@ main {
 }
 .hero-description {
   color:var(--muted);
-  max-width:380px;
+  max-width:390px;
   font-size:13px;
   line-height:1.9;
 }
 .hero-index {
   font-family:'Playfair Display',serif;
   font-size:40px;
+  color:var(--cyan);
+  text-shadow:0 0 18px #00eaff66;
 }
 
 .section-heading {
@@ -117,13 +143,13 @@ main {
   justify-content:space-between;
   align-items:center;
   border-bottom:1px solid var(--line);
-  padding:24px 0 13px;
-  margin-bottom:15px;
+  padding:25px 0 15px;
+  margin-bottom:10px;
 }
 .section-heading h2 {
   font-family:'Playfair Display',serif;
   font-weight:500;
-  font-size:26px;
+  font-size:27px;
   margin:0;
 }
 .section-heading span {
@@ -132,24 +158,50 @@ main {
   letter-spacing:2px;
 }
 
-/* 3D CIRCULAR PHOTO GALLERY */
+/* NEON 3D CIRCULAR GALLERY */
 .marquee {
   width:100%;
-  height:410px;
-  overflow:hidden;
+  height:470px;
   position:relative;
-  perspective:1100px;
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  perspective:1500px;
+  perspective-origin:50% 45%;
   isolation:isolate;
+}
+.marquee::before {
+  content:"";
+  position:absolute;
+  width:370px;
+  height:370px;
+  border:1px solid #00eaff66;
+  border-radius:50%;
+  box-shadow:
+    0 0 20px #00eaff33,
+    0 0 60px #9b5cff22,
+    inset 0 0 30px #9b5cff22;
+  transform:rotateX(72deg);
+}
+.marquee::after {
+  content:"";
+  position:absolute;
+  width:250px;
+  height:250px;
+  border-radius:50%;
+  background:var(--cyan);
+  filter:blur(120px);
+  opacity:.12;
+  pointer-events:none;
 }
 .track {
   position:relative;
   width:190px;
-  height:250px;
+  height:260px;
   transform-style:preserve-3d;
-  animation:rotateGallery 28s linear infinite;
+  animation:neonOrbit 30s linear infinite;
+  will-change:transform;
 }
 .marquee:hover .track {
   animation-play-state:paused;
@@ -158,40 +210,61 @@ main {
   position:absolute;
   inset:0;
   width:190px;
-  height:250px;
+  height:260px;
   overflow:hidden;
-  background:#d6d0c4;
-  border:1px solid var(--line);
-  backface-visibility:hidden;
+  border-radius:14px;
+  border:1px solid #00eaff99;
+  background:#111426;
   transform:
     rotateY(calc(var(--i) * var(--angle)))
-    translateZ(270px);
-  box-shadow:0 12px 35px #0002;
+    translateZ(var(--radius));
+  backface-visibility:hidden;
+  box-shadow:
+    0 0 12px #00eaff55,
+    0 0 35px #9b5cff44,
+    inset 0 0 15px #00eaff22;
+}
+.slide::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(
+    145deg,
+    #ffffff30,
+    transparent 30%,
+    transparent 70%,
+    #00eaff22
+  );
 }
 .slide img {
-  display:block;
   width:100%;
   height:100%;
   object-fit:cover;
+  display:block;
   cursor:zoom-in;
-  transition:filter .4s, transform .5s;
+  transition:transform .6s,filter .6s;
 }
 .slide:hover img {
-  filter:brightness(.85);
-  transform:scale(1.04);
+  transform:scale(1.08);
+  filter:saturate(1.3) brightness(1.12);
 }
-@keyframes rotateGallery {
-  from {transform:rotateY(0deg)}
-  to {transform:rotateY(-360deg)}
+@keyframes neonOrbit {
+  from {transform:rotateX(-9deg) rotateY(0deg)}
+  to {transform:rotateX(-9deg) rotateY(-360deg)}
 }
 
-.archive {padding:25px 0 70px}
+/* PHOTO ARCHIVE */
+.archive {
+  padding:35px 0 75px;
+}
 .archive-title {
   font-family:'Playfair Display',serif;
   font-size:clamp(40px,7vw,75px);
   font-weight:500;
-  margin:10px 0 25px;
+  margin:12px 0 25px;
   letter-spacing:-2px;
+  text-shadow:0 0 25px #9b5cff33;
 }
 .filters {
   display:flex;
@@ -201,66 +274,86 @@ main {
 }
 .filters button {
   background:transparent;
-  border:1px solid var(--line);
-  padding:9px 15px;
+  border:1px solid #34374e;
+  padding:10px 15px;
   font-size:10px;
   letter-spacing:1.5px;
   color:var(--ink);
+  transition:.2s;
 }
 .filters button.active,
 .filters button:hover {
-  background:var(--ink);
-  color:var(--paper);
-  border-color:var(--ink);
+  background:var(--cyan);
+  color:#080912;
+  border-color:var(--cyan);
+  box-shadow:0 0 15px #00eaff55;
 }
-
 #gallery {
   columns:4 210px;
   column-gap:16px;
 }
 .photo {
   break-inside:avoid;
-  margin:0 0 17px;
+  margin:0 0 18px;
+  padding:8px;
+  background:#111426;
+  border:1px solid #292d43;
+  border-radius:10px;
+  transition:.3s;
+}
+.photo:hover {
+  border-color:#00eaff88;
+  box-shadow:0 0 20px #00eaff22;
+  transform:translateY(-3px);
 }
 .photo img {
   display:block;
   width:100%;
   cursor:zoom-in;
-  background:#ddd7ca;
+  border-radius:6px;
+  background:#202338;
 }
 .photo img:hover {filter:brightness(.85)}
 .caption {
-  padding:10px 0;
+  padding:12px 3px 5px;
   display:flex;
   justify-content:space-between;
   gap:8px;
   font-size:12px;
 }
 .caption small {
-  color:var(--muted);
+  color:var(--cyan);
   font-size:9px;
   letter-spacing:1px;
   text-transform:uppercase;
 }
 .delete {
   background:transparent;
-  border:1px solid #a44;
-  color:#a44;
+  border:1px solid #ff5b78;
+  color:#ff8b9e;
   padding:7px 12px;
   font-size:10px;
-  margin-bottom:10px;
+  margin:8px 0 2px;
+}
+.empty {
+  color:var(--muted);
+  font-size:13px;
+  padding:20px 0;
 }
 
+/* OWNER STUDIO */
 #ownerPanel {
   display:none;
-  background:#e4dfd4;
-  border:1px solid var(--line);
+  background:#111426;
+  border:1px solid #34374e;
+  border-radius:12px;
   padding:24px;
   margin:25px 0;
+  box-shadow:0 0 30px #9b5cff11;
 }
 #ownerPanel h3 {
   font-family:'Playfair Display',serif;
-  font-size:25px;
+  font-size:27px;
   font-weight:500;
   margin-top:0;
 }
@@ -270,19 +363,26 @@ main {
   gap:9px;
 }
 input,select {
-  background:var(--white);
-  color:var(--ink);
-  border:1px solid var(--line);
+  background:#080912;
+  color:white;
+  border:1px solid #34374e;
+  border-radius:5px;
   padding:12px;
   max-width:100%;
 }
 .action-button {
-  background:var(--ink);
-  color:var(--paper);
-  border:1px solid var(--ink);
+  background:var(--cyan);
+  color:#080912;
+  border:1px solid var(--cyan);
+  border-radius:5px;
   padding:12px 17px;
   font-size:10px;
   letter-spacing:1px;
+  font-weight:700;
+  transition:.2s;
+}
+.action-button:hover {
+  box-shadow:0 0 18px #00eaff77;
 }
 .action-button:disabled {opacity:.5}
 #status {
@@ -291,6 +391,7 @@ input,select {
   margin-top:12px;
 }
 
+/* FOOTER */
 footer {
   border-top:1px solid var(--line);
   padding:35px 6%;
@@ -298,6 +399,7 @@ footer {
   justify-content:space-between;
   flex-wrap:wrap;
   gap:15px;
+  background:#080912;
 }
 .footer-logo {
   font-family:'Playfair Display',serif;
@@ -309,26 +411,29 @@ footer small {
   letter-spacing:1px;
 }
 
+/* LOGIN */
 #loginPanel,#viewer {
   display:none;
   position:fixed;
   inset:0;
   z-index:50;
-  background:#111d;
+  background:#05060df2;
   place-items:center;
   padding:20px;
 }
 .loginbox {
   width:min(390px,100%);
-  background:var(--paper);
+  background:#111426;
   padding:30px;
-  border:1px solid var(--line);
+  border:1px solid #00eaff88;
+  border-radius:12px;
+  box-shadow:0 0 40px #00eaff22,0 0 80px #9b5cff22;
 }
 .loginbox h2 {
   font-family:'Playfair Display',serif;
   font-size:35px;
   font-weight:500;
-  margin:0 0 5px;
+  margin:10px 0 5px;
 }
 .loginbox p {
   color:var(--muted);
@@ -340,25 +445,27 @@ footer small {
   width:100%;
   margin:12px 0;
 }
-.loginbox button {width:100%;margin-top:7px}
+.loginbox button {
+  width:100%;
+  margin-top:7px;
+}
 #loginStatus {
   font-size:12px;
-  color:#9b3939;
+  color:#ff8b9e;
   letter-spacing:0;
+  margin-top:10px;
 }
 #viewer {
-  background:#090909f5;
+  background:#05060df5;
   cursor:zoom-out;
 }
 #viewer img {
   max-width:95vw;
   max-height:90vh;
   object-fit:contain;
-}
-.empty {
-  color:var(--muted);
-  font-size:13px;
-  padding:20px 0;
+  border:1px solid #00eaff66;
+  box-shadow:0 0 35px #00eaff33;
+  border-radius:8px;
 }
 
 @media(max-width:700px) {
@@ -369,18 +476,19 @@ footer small {
   .hero-title {letter-spacing:-3px}
   .hero-bottom {align-items:start}
   .marquee {
-    height:330px;
-    perspective:850px;
+    height:360px;
+    perspective:1050px;
+  }
+  .marquee::before {
+    width:280px;
+    height:280px;
   }
   .track {
-    transform:scale(.78);
+    transform:scale(.85);
   }
   .slide {
-    width:170px;
-    height:225px;
-    transform:
-      rotateY(calc(var(--i) * var(--angle)))
-      translateZ(220px);
+    width:150px;
+    height:215px;
   }
   #gallery {columns:2 140px}
   footer {padding:28px 5%}
@@ -418,7 +526,7 @@ footer small {
 <section>
   <div class="section-heading">
     <h2>Selected Moments</h2>
-    <span>AN ONGOING COLLECTION</span>
+    <span>3D VISUAL EXPERIENCE</span>
   </div>
   <div class="marquee">
     <div class="track" id="track"></div>
@@ -474,7 +582,7 @@ footer small {
     <form id="loginForm">
       <input id="password" type="password" placeholder="Enter your owner password" autocomplete="current-password" required>
       <button class="action-button" type="submit">SIGN IN ↗</button>
-      <button class="action-button" type="button" id="closeLogin" style="background:transparent;color:#191916">CANCEL</button>
+      <button class="action-button" type="button" id="closeLogin" style="background:transparent;color:white;border-color:#555">CANCEL</button>
     </form>
     <div id="loginStatus"></div>
   </div>
@@ -491,7 +599,10 @@ const SUPABASE_KEY = "sb_publishable_O4sRwFbo8YsbYokaH_QeEw_aGzhM3D1";
 const OWNER_EMAIL = "akhtar32132123@gmail.com";
 const BUCKET = "akhtar-photos";
 
-const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
 let isOwner = false;
 let currentCategory = "All";
@@ -506,10 +617,13 @@ function setStatus(message) {
 
 function photoURL(photo) {
   if(photo.image_url) return photo.image_url;
-  return db.storage.from(BUCKET).getPublicUrl(photo.image_path).data.publicUrl;
+
+  return db.storage
+    .from(BUCKET)
+    .getPublicUrl(photo.image_path).data.publicUrl;
 }
 
-// PHOTO VIEWER
+// IMAGE VIEWER
 function openViewer(url) {
   document.getElementById("viewerImg").src = url;
   document.getElementById("viewer").style.display = "grid";
@@ -519,7 +633,7 @@ document.getElementById("viewer").onclick = () => {
   document.getElementById("viewer").style.display = "none";
 };
 
-// 3D CIRCULAR GALLERY
+// NEON 3D CIRCULAR SLIDER
 function renderSlider(photos) {
   track.innerHTML = "";
 
@@ -528,10 +642,20 @@ function renderSlider(photos) {
   const count = Math.min(photos.length,8);
   const angle = 360/count;
 
+  const cardWidth = window.innerWidth <= 700 ? 150 : 190;
+
+  const radius = count < 3
+    ? 260
+    : Math.round(
+        cardWidth / (2 * Math.tan(Math.PI / count)) + 55
+      );
+
   track.style.setProperty("--angle",angle+"deg");
+  track.style.setProperty("--radius",radius+"px");
 
   for(let i=0;i<count;i++) {
     const photo = photos[i];
+
     const slide = document.createElement("div");
     slide.className = "slide";
     slide.style.setProperty("--i",i);
@@ -556,7 +680,8 @@ async function loadPhotos() {
     .order("created_at",{ascending:false});
 
   if(error) {
-    gallery.innerHTML = '<p class="empty">Unable to load collection: '+
+    gallery.innerHTML =
+      '<p class="empty">Unable to load collection: '+
       error.message+'</p>';
     console.error(error);
     return;
@@ -564,7 +689,6 @@ async function loadPhotos() {
 
   const photos = data || [];
 
-  // Circular slider always uses the complete photo collection.
   renderSlider(photos);
 
   const filtered = currentCategory === "All"
@@ -574,7 +698,8 @@ async function loadPhotos() {
   gallery.innerHTML = "";
 
   if(!filtered.length) {
-    gallery.innerHTML = '<p class="empty">No photographs in this collection yet.</p>';
+    gallery.innerHTML =
+      '<p class="empty">No photographs in this collection yet.</p>';
     return;
   }
 
@@ -612,8 +737,9 @@ async function loadPhotos() {
   });
 }
 
-// UPLOAD PHOTO
-document.getElementById("uploadForm").addEventListener("submit",async function(e) {
+// UPLOAD
+document.getElementById("uploadForm")
+.addEventListener("submit",async function(e) {
   e.preventDefault();
   if(!isOwner) return;
 
@@ -636,20 +762,23 @@ document.getElementById("uploadForm").addEventListener("submit",async function(e
   setStatus("Uploading photograph...");
 
   try {
-    const {error:uploadError} = await db.storage.from(BUCKET)
+    const {error:uploadError} = await db.storage
+      .from(BUCKET)
       .upload(path,file,{contentType:file.type});
 
     if(uploadError) throw uploadError;
 
-    const publicUrl = db.storage.from(BUCKET)
+    const publicUrl = db.storage
+      .from(BUCKET)
       .getPublicUrl(path).data.publicUrl;
 
-    const {error:insertError} = await db.from("photos").insert({
-      title:title,
-      category:category,
-      image_path:path,
-      image_url:publicUrl
-    });
+    const {error:insertError} = await db.from("photos")
+      .insert({
+        title:title,
+        category:category,
+        image_path:path,
+        image_url:publicUrl
+      });
 
     if(insertError) {
       await db.storage.from(BUCKET).remove([path]);
@@ -667,7 +796,7 @@ document.getElementById("uploadForm").addEventListener("submit",async function(e
   }
 });
 
-// DELETE PHOTO
+// DELETE
 async function deletePhoto(photo) {
   if(!confirm("Delete this photograph?")) return;
 
@@ -681,7 +810,10 @@ async function deletePhoto(photo) {
   }
 
   if(photo.image_path) {
-    const result = await db.storage.from(BUCKET).remove([photo.image_path]);
+    const result = await db.storage
+      .from(BUCKET)
+      .remove([photo.image_path]);
+
     if(result.error) {
       console.error(result.error);
       alert("Photo record deleted, but storage cleanup failed.");
@@ -700,7 +832,8 @@ document.getElementById("closeLogin").onclick = () => {
   document.getElementById("loginPanel").style.display = "none";
 };
 
-document.getElementById("loginForm").addEventListener("submit",async function(e) {
+document.getElementById("loginForm")
+.addEventListener("submit",async function(e) {
   e.preventDefault();
 
   const msg = document.getElementById("loginStatus");
@@ -747,7 +880,8 @@ function updateOwner(value) {
 }
 
 // FILTERS
-document.querySelectorAll("#filters button").forEach(button => {
+document.querySelectorAll("#filters button")
+.forEach(button => {
   button.onclick = () => {
     document.querySelectorAll("#filters button")
       .forEach(b => b.classList.remove("active"));
@@ -758,16 +892,7 @@ document.querySelectorAll("#filters button").forEach(button => {
   };
 });
 
-// CHECK LOGIN SESSION
-db.auth.getSession().then(({data,error}) => {
-  if(error) console.error(error);
-
-  const user = data.session?.user;
-
-  updateOwner(
-    !!user && user.email?.toLowerCase() === OWNER_EMAIL
-  );
-});
-</script>
-</body>
-</html>
+// RESIZE 3D GALLERY
+window.addEventListener("resize",() => {
+  const {data} = db.auth.getSession();
+  // Slider will be recalculated on the next photo load.
