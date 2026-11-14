@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -8,23 +7,31 @@
 <title>MUTHO PHOTO — Visual Stories</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
 :root{--paper:#080912;--ink:#f5f7ff;--muted:#9295ad;--line:#292d43;--cyan:#00eaff;--purple:#9b5cff}
-*{box-sizing:border-box}
+* {box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:radial-gradient(ellipse at 50% 20%,#171333 0%,#080912 65%);color:var(--ink);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+body{margin:0;background:radial-gradient(ellipse at 50% 20%,#171333 0%,#080912 65%);color:var(--ink);font-family:'DM Sans',sans-serif;overflow-x:hidden;transition:background 0.8s ease}
+body.village{background:radial-gradient(ellipse at 50% 20%,#4a752c 0%,#080912 85%)}
+body.pillager{background:radial-gradient(ellipse at 50% 20%,#4e4e4e 0%,#080912 85%)}
+body.ancient{background:radial-gradient(ellipse at 50% 20%,#003333 0%,#080912 85%)}
+body.cherry{background:radial-gradient(ellipse at 50% 20%,#ffb7c5 0%,#080912 85%)}
+body.nether{background:radial-gradient(ellipse at 50% 20%,#5a0000 0%,#080912 85%)}
+body.end{background:radial-gradient(ellipse at 50% 20%,#3d3d3d 0%,#080912 85%)}
 button,input,select{font:inherit}
 button{cursor:pointer}
 a{color:inherit;text-decoration:none}
 .topline{height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--cyan));box-shadow:0 0 18px var(--cyan)}
-header{padding:23px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);background:#080912bb;backdrop-filter:blur(15px)}
+header{padding:23px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);background:#080912bb;backdrop-filter:blur(15px);position:sticky;top:0;z-index:100}
 .logo{font-family:'Playfair Display',serif;font-size:27px;font-weight:700;letter-spacing:1px}
 .logo span{color:var(--cyan);font-style:italic;font-weight:400;text-shadow:0 0 15px #00eaff77}
 .header-right{display:flex;gap:25px;align-items:center}
 .header-note{color:var(--muted);font-size:10px;letter-spacing:2px}
 .owner-button{color:var(--cyan);border:1px solid var(--cyan);background:transparent;padding:11px 17px;font-size:10px;letter-spacing:2px;transition:.3s}
 .owner-button:hover{background:var(--cyan);color:#080912;box-shadow:0 0 25px #00eaff88}
+.world-switcher{display:flex;justify-content:center;gap:10px;padding:15px 6%;background:#111426;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+.world-btn{background:transparent;border:1px solid #34374e;padding:8px 14px;font-size:10px;letter-spacing:1px;color:var(--muted);transition:0.3s;border-radius:4px}
+.world-btn:hover,.world-btn.active{border-color:var(--cyan);color:var(--cyan);background:#00eaff11}
 main{max-width:1500px;margin:auto;padding:0 6%}
 .hero{padding:85px 0 50px;border-bottom:1px solid var(--line)}
 .eyebrow{font-size:10px;letter-spacing:4px;color:var(--cyan);text-transform:uppercase}
@@ -79,6 +86,7 @@ footer small{color:var(--muted);font-size:10px;letter-spacing:1px}
 header{padding:19px 5%}.header-note{display:none}main{padding:0 5%}.hero{padding-top:55px}.hero-title{letter-spacing:-3px}.hero-bottom{align-items:start}
 .marquee{height:360px;perspective:1050px}.marquee:before{width:280px;height:280px}
 .track{--track-scale:.85}.slide{width:150px;height:215px}#gallery{columns:2 140px}footer{padding:28px 5%}
+.world-switcher{padding:10px 5%;gap:8px}
 }
 @media(prefers-reduced-motion:reduce){.track{animation:none}}
 </style>
@@ -92,6 +100,15 @@ header{padding:19px 5%}.header-note{display:none}main{padding:0 5%}.hero{padding
 <button class="owner-button" id="loginBtn">OWNER ACCESS ↗</button>
 </div>
 </header>
+<div class="world-switcher">
+<button class="world-btn active" data-world="default">ORIGIN</button>
+<button class="world-btn" data-world="village">VILLAGE</button>
+<button class="world-btn" data-world="pillager">PILLAGER OUTPOST</button>
+<button class="world-btn" data-world="ancient">ANCIENT CITY</button>
+<button class="world-btn" data-world="cherry">CHERRY GROVE</button>
+<button class="world-btn" data-world="nether">NETHER</button>
+<button class="world-btn" data-world="end">THE END</button>
+</div>
 <main>
 <section class="hero">
 <div class="eyebrow">VISUAL STORIES · EST. 2026</div>
@@ -140,313 +157,259 @@ header{padding:19px 5%}.header-note{display:none}main{padding:0 5%}.hero{padding
 </div>
 </div>
 <div id="viewer"><img id="viewerImg" alt="Expanded photograph"></div>
-
 <script>
 "use strict";
-
 // SUPABASE CONFIGURATION
 const SUPABASE_URL = "https://evipwzjdyelahsemvqjv.supabase.co";
 const SUPABASE_KEY = "sb_publishable_O4sRwFbo8YsbYokaH_QeEw_aGzhM3D1";
 const OWNER_EMAIL = "akhtar32132123@gmail.com";
 const BUCKET = "akhtar-photos";
-
 const gallery = document.getElementById("gallery");
 const track = document.getElementById("track");
 const statusEl = document.getElementById("status");
 const loginPanel = document.getElementById("loginPanel");
 const loginStatus = document.getElementById("loginStatus");
-
 let db = null;
 let isOwner = false;
 let currentCategory = "All";
 let latestPhotos = [];
-
 function setStatus(message) {
-  statusEl.textContent = message;
+statusEl.textContent = message;
 }
-
 function photoURL(photo) {
-  if (photo.image_url) return photo.image_url;
-  if (!photo.image_path) return "";
-  return db.storage.from(BUCKET).getPublicUrl(photo.image_path).data.publicUrl;
+if (photo.image_url) return photo.image_url;
+if (!photo.image_path) return "";
+return db.storage.from(BUCKET).getPublicUrl(photo.image_path).data.publicUrl;
 }
-
 function openViewer(url) {
-  if (!url) return;
-  document.getElementById("viewerImg").src = url;
-  document.getElementById("viewer").style.display = "grid";
+if (!url) return;
+document.getElementById("viewerImg").src = url;
+document.getElementById("viewer").style.display = "grid";
 }
-
 document.getElementById("viewer").onclick = () => {
-  document.getElementById("viewer").style.display = "none";
+document.getElementById("viewer").style.display = "none";
 };
-
 function renderSlider(photos) {
-  track.innerHTML = "";
-  if (!photos.length) return;
-
-  const count = Math.min(photos.length, 8);
-  const angle = 360 / count;
-  const cardWidth = window.innerWidth <= 700 ? 150 : 190;
-  const radius = count < 3 ? 260 :
-    Math.round(cardWidth / (2 * Math.tan(Math.PI / count)) + 55);
-
-  track.style.setProperty("--angle", angle + "deg");
-  track.style.setProperty("--radius", radius + "px");
-
-  for (let i = 0; i < count; i++) {
-    const photo = photos[i];
-    const slide = document.createElement("div");
-    slide.className = "slide";
-    slide.style.setProperty("--i", i);
-
-    const img = document.createElement("img");
-    img.src = photoURL(photo);
-    img.alt = photo.title || "Mutho Photo";
-    img.loading = i < 3 ? "eager" : "lazy";
-    img.onerror = () => { slide.style.display = "none"; };
-    img.onclick = () => openViewer(img.src);
-
-    slide.appendChild(img);
-    track.appendChild(slide);
-  }
+track.innerHTML = "";
+if (!photos.length) return;
+const count = Math.min(photos.length, 8);
+const angle = 360 / count;
+const cardWidth = window.innerWidth <= 700 ? 150 : 190;
+const radius = count < 3 ? 260 :
+Math.round(cardWidth / (2 * Math.tan(Math.PI / count)) + 55);
+track.style.setProperty("--angle", angle + "deg");
+track.style.setProperty("--radius", radius + "px");
+for (let i = 0; i < count; i++) {
+const photo = photos[i];
+const slide = document.createElement("div");
+slide.className = "slide";
+slide.style.setProperty("--i", i);
+const img = document.createElement("img");
+img.src = photoURL(photo);
+img.alt = photo.title || "Mutho Photo";
+img.loading = i < 3 ? "eager" : "lazy";
+img.onerror = () => { slide.style.display = "none"; };
+img.onclick = () => openViewer(img.src);
+slide.appendChild(img);
+track.appendChild(slide);
 }
-
+}
 function renderGallery(photos) {
-  const filtered = currentCategory === "All"
-    ? photos
-    : photos.filter(p => p.category === currentCategory);
-
-  gallery.innerHTML = "";
-
-  if (!filtered.length) {
-    gallery.innerHTML = '<p class="empty">No photographs in this collection yet.</p>';
-    return;
-  }
-
-  filtered.forEach(photo => {
-    const card = document.createElement("article");
-    card.className = "photo";
-
-    const img = document.createElement("img");
-    img.src = photoURL(photo);
-    img.alt = photo.title || "Mutho Photo";
-    img.loading = "lazy";
-    img.onerror = () => {
-      img.alt = "Image could not be loaded";
-      img.style.minHeight = "100px";
-    };
-    img.onclick = () => openViewer(img.src);
-
-    const caption = document.createElement("div");
-    caption.className = "caption";
-
-    const title = document.createElement("span");
-    title.textContent = photo.title || "Untitled";
-
-    const category = document.createElement("small");
-    category.textContent = photo.category || "";
-
-    caption.append(title, category);
-    card.append(img, caption);
-
-    if (isOwner) {
-      const del = document.createElement("button");
-      del.className = "delete";
-      del.textContent = "DELETE PHOTO";
-      del.onclick = () => deletePhoto(photo);
-      card.appendChild(del);
-    }
-
-    gallery.appendChild(card);
-  });
+const filtered = currentCategory === "All"
+? photos
+: photos.filter(p => p.category === currentCategory);
+gallery.innerHTML = "";
+if (!filtered.length) {
+gallery.innerHTML = '<p class="empty">No photographs in this collection yet.</p>';
+return;
 }
-
+filtered.forEach(photo => {
+const card = document.createElement("article");
+card.className = "photo";
+const img = document.createElement("img");
+img.src = photoURL(photo);
+img.alt = photo.title || "Mutho Photo";
+img.loading = "lazy";
+img.onerror = () => {
+img.alt = "Image could not be loaded";
+img.style.minHeight = "100px";
+};
+img.onclick = () => openViewer(img.src);
+const caption = document.createElement("div");
+caption.className = "caption";
+const title = document.createElement("span");
+title.textContent = photo.title || "Untitled";
+const category = document.createElement("small");
+category.textContent = photo.category || "";
+caption.append(title, category);
+card.append(img, caption);
+if (isOwner) {
+const del = document.createElement("button");
+del.className = "delete";
+del.textContent = "DELETE PHOTO";
+del.onclick = () => deletePhoto(photo);
+card.appendChild(del);
+}
+gallery.appendChild(card);
+});
+}
 async function loadPhotos() {
-  gallery.innerHTML = '<p class="empty">Loading collection...</p>';
-
-  try {
-    const { data, error } = await db.from("photos")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-
-    latestPhotos = data || [];
-    renderSlider(latestPhotos);
-    renderGallery(latestPhotos);
-  } catch (error) {
-    console.error("Photo loading error:", error);
-    gallery.innerHTML =
-      '<p class="empty">Unable to load collection: ' +
-      String(error.message || error) + '</p>';
-    track.innerHTML = "";
-  }
+gallery.innerHTML = '<p class="empty">Loading collection...</p>';
+try {
+const { data, error } = await db.from("photos")
+.select("*")
+.order("created_at", { ascending: false });
+if (error) throw error;
+latestPhotos = data || [];
+renderSlider(latestPhotos);
+renderGallery(latestPhotos);
+} catch (error) {
+console.error("Photo loading error:", error);
+gallery.innerHTML =
+'<p class="empty">Unable to load collection: '
++ String(error.message || error) + '</p>';
+track.innerHTML = "";
 }
-
+}
 document.getElementById("loginBtn").onclick = () => {
-  loginStatus.textContent = "";
-  loginPanel.style.display = "grid";
+loginStatus.textContent = "";
+loginPanel.style.display = "grid";
 };
-
 document.getElementById("closeLogin").onclick = () => {
-  loginPanel.style.display = "none";
+loginPanel.style.display = "none";
 };
-
 document.getElementById("loginForm").addEventListener("submit", async e => {
-  e.preventDefault();
-
-  const button = document.getElementById("signInButton");
-  button.disabled = true;
-  loginStatus.textContent = "Checking credentials...";
-
-  try {
-    const password = document.getElementById("password").value;
-    const { data, error } = await db.auth.signInWithPassword({
-      email: OWNER_EMAIL,
-      password
-    });
-
-    if (error) throw error;
-
-    if (data.user?.email?.toLowerCase() !== OWNER_EMAIL.toLowerCase()) {
-      await db.auth.signOut();
-      throw new Error("Unauthorized account.");
-    }
-
-    document.getElementById("password").value = "";
-    loginPanel.style.display = "none";
-    updateOwner(true);
-  } catch (error) {
-    console.error("Login error:", error);
-    loginStatus.textContent = "Login failed: " + (error.message || "Please try again.");
-  } finally {
-    button.disabled = false;
-  }
+e.preventDefault();
+const button = document.getElementById("signInButton");
+button.disabled = true;
+loginStatus.textContent = "Checking credentials...";
+try {
+const password = document.getElementById("password").value;
+const { data, error } = await db.auth.signInWithPassword({
+email: OWNER_EMAIL,
+password
 });
-
+if (error) throw error;
+if (data.user?.email?.toLowerCase() !== OWNER_EMAIL.toLowerCase()) {
+await db.auth.signOut();
+throw new Error("Unauthorized account.");
+}
+document.getElementById("password").value = "";
+loginPanel.style.display = "none";
+updateOwner(true);
+} catch (error) {
+console.error("Login error:", error);
+loginStatus.textContent = "Login failed: " + (error.message || "Please try again.");
+} finally {
+button.disabled = false;
+}
+});
 function updateOwner(value) {
-  isOwner = value;
-  document.getElementById("ownerPanel").style.display = value ? "block" : "none";
-  document.getElementById("loginBtn").style.display = value ? "none" : "inline-block";
-  setStatus(value ? "Owner studio active." : "");
-  renderGallery(latestPhotos);
+isOwner = value;
+document.getElementById("ownerPanel").style.display = value ? "block" : "none";
+document.getElementById("loginBtn").style.display = value ? "none" : "inline-block";
+setStatus(value ? "Owner studio active." : "");
+renderGallery(latestPhotos);
 }
-
 document.getElementById("logoutBtn").onclick = async () => {
-  const { error } = await db.auth.signOut();
-  if (error) {
-    setStatus("Logout failed: " + error.message);
-    return;
-  }
-  updateOwner(false);
-};
-
-document.getElementById("uploadForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
-  if (!isOwner) return;
-
-  const file = document.getElementById("photoFile").files[0];
-  const title = document.getElementById("photoTitle").value.trim();
-  const category = document.getElementById("photoCategory").value;
-  const button = document.getElementById("uploadButton");
-
-  if (!file || !file.type.startsWith("image/")) {
-    setStatus("Please select a valid image.");
-    return;
-  }
-
-  const extension = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
-  const path = Date.now() + "-" + crypto.randomUUID() + "." + extension;
-
-  button.disabled = true;
-  setStatus("Uploading photograph...");
-
-  try {
-    const { error: uploadError } = await db.storage.from(BUCKET)
-      .upload(path, file, { contentType: file.type });
-
-    if (uploadError) throw uploadError;
-
-    const publicUrl = db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
-
-    const { error: insertError } = await db.from("photos").insert({
-      title,
-      category,
-      image_path: path,
-      image_url: publicUrl
-    });
-
-    if (insertError) {
-      await db.storage.from(BUCKET).remove([path]);
-      throw insertError;
-    }
-
-    this.reset();
-    setStatus("Photograph uploaded successfully.");
-    await loadPhotos();
-  } catch (error) {
-    setStatus("Upload failed: " + (error.message || error));
-  } finally {
-    button.disabled = false;
-  }
-});
-
-async function deletePhoto(photo) {
-  if (!confirm("Delete this photograph?")) return;
-
-  try {
-    const { error } = await db.from("photos").delete().eq("id", photo.id);
-    if (error) throw error;
-
-    if (photo.image_path) {
-      const result = await db.storage.from(BUCKET).remove([photo.image_path]);
-      if (result.error) console.error(result.error);
-    }
-
-    await loadPhotos();
-  } catch (error) {
-    alert("Delete failed: " + (error.message || error));
-  }
+const { error } = await db.auth.signOut();
+if (error) {
+setStatus("Logout failed: " + error.message);
+return;
 }
-
-document.querySelectorAll("#filters button").forEach(button => {
-  button.onclick = () => {
-    document.querySelectorAll("#filters button").forEach(b => b.classList.remove("active"));
-    button.classList.add("active");
-    currentCategory = button.dataset.cat;
-    renderGallery(latestPhotos);
-  };
+updateOwner(false);
+};
+document.getElementById("uploadForm").addEventListener("submit", async function(e) {
+e.preventDefault();
+if (!isOwner) return;
+const file = document.getElementById("photoFile").files[0];
+const title = document.getElementById("photoTitle").value.trim();
+const category = document.getElementById("photoCategory").value;
+const button = document.getElementById("uploadButton");
+if (!file || !file.type.startsWith("image/")) {
+setStatus("Please select a valid image.");
+return;
+}
+const extension = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+const path = Date.now() + "-" + crypto.randomUUID() + "." + extension;
+button.disabled = true;
+setStatus("Uploading photograph...");
+try {
+const { error: uploadError } = await db.storage.from(BUCKET)
+.upload(path, file, { contentType: file.type });
+if (uploadError) throw uploadError;
+const publicUrl = db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+const { error: insertError } = await db.from("photos").insert({
+title,
+category,
+image_path: path,
+image_url: publicUrl
 });
-
+if (insertError) {
+await db.storage.from(BUCKET).remove([path]);
+throw insertError;
+}
+this.reset();
+setStatus("Photograph uploaded successfully.");
+await loadPhotos();
+} catch (error) {
+setStatus("Upload failed: " + (error.message || error));
+} finally {
+button.disabled = false;
+}
+});
+async function deletePhoto(photo) {
+if (!confirm("Delete this photograph?")) return;
+try {
+const { error } = await db.from("photos").delete().eq("id", photo.id);
+if (error) throw error;
+if (photo.image_path) {
+const result = await db.storage.from(BUCKET).remove([photo.image_path]);
+if (result.error) console.error(result.error);
+}
+await loadPhotos();
+} catch (error) {
+alert("Delete failed: " + (error.message || error));
+}
+}
+document.querySelectorAll("#filters button").forEach(button => {
+button.onclick = () => {
+document.querySelectorAll("#filters button").forEach(b => b.classList.remove("active"));
+button.classList.add("active");
+currentCategory = button.dataset.cat;
+renderGallery(latestPhotos);
+};
+});
+// WORLD SWITCHER LOGIC
+document.querySelectorAll(".world-btn").forEach(btn => {
+btn.onclick = () => {
+document.querySelectorAll(".world-btn").forEach(b => b.classList.remove("active"));
+btn.classList.add("active");
+const world = btn.dataset.world;
+document.body.className = (world === "default") ? "" : world;
+};
+});
 window.addEventListener("resize", () => renderSlider(latestPhotos));
-
 // START WEBSITE
 async function initWebsite() {
-  if (!window.supabase) {
-    gallery.innerHTML = '<p class="empty">Supabase library failed to load. Refresh the page.</p>';
-    return;
-  }
-
-  try {
-    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    const { data, error } = await db.auth.getSession();
-    if (error) throw error;
-
-    const owner = data.session?.user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
-    isOwner = owner;
-
-    document.getElementById("ownerPanel").style.display = owner ? "block" : "none";
-    document.getElementById("loginBtn").style.display = owner ? "none" : "inline-block";
-
-    await loadPhotos();
-  } catch (error) {
-    console.error("Initialization error:", error);
-    gallery.innerHTML = '<p class="empty">Connection error: ' + (error.message || error) + '</p>';
-  }
+if (!window.supabase) {
+gallery.innerHTML = '<p class="empty">Supabase library failed to load. Refresh the page.</p>';
+return;
 }
-
+try {
+db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const { data, error } = await db.auth.getSession();
+if (error) throw error;
+const owner = data.session?.user?.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
+isOwner = owner;
+document.getElementById("ownerPanel").style.display = owner ? "block" : "none";
+document.getElementById("loginBtn").style.display = owner ? "none" : "inline-block";
+await loadPhotos();
+} catch (error) {
+console.error("Initialization error:", error);
+gallery.innerHTML = '<p class="empty">Connection error: ' + (error.message || error) + '</p>';
+}
+}
 initWebsite();
 </script>
 </body>
