@@ -8,88 +8,85 @@
 <title>MUTHO PHOTO — Visual Stories</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
+:root {
   --paper:#eeeae1;
   --ink:#191916;
   --muted:#77766e;
   --line:#cbc6ba;
   --white:#fffdf8;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
+
+* {box-sizing:border-box}
+html {scroll-behavior:smooth}
+body {
   margin:0;
   background:var(--paper);
   color:var(--ink);
   font-family:'DM Sans',sans-serif;
 }
-button,input,select{font:inherit}
-button{cursor:pointer}
-a{color:inherit;text-decoration:none}
+button,input,select {font:inherit}
+button {cursor:pointer}
+a {color:inherit;text-decoration:none}
 
-.topline{
-  height:5px;
-  background:var(--ink);
-}
-header{
+.topline {height:5px;background:var(--ink)}
+
+header {
   padding:24px 6%;
   display:flex;
   justify-content:space-between;
   align-items:center;
   border-bottom:1px solid var(--line);
 }
-.logo{
+.logo {
   font-family:'Playfair Display',serif;
   font-size:27px;
   font-weight:700;
   letter-spacing:1px;
 }
-.logo span{font-style:italic;font-weight:400}
-.header-right{
+.logo span {font-style:italic;font-weight:400}
+.header-right {
   display:flex;
   gap:25px;
   align-items:center;
 }
-.header-note{
+.header-note {
   color:var(--muted);
   font-size:10px;
   letter-spacing:2px;
 }
-.owner-button{
+.owner-button {
   border:1px solid var(--ink);
   color:var(--ink);
   background:transparent;
   padding:10px 17px;
   font-size:10px;
   letter-spacing:2px;
-  transition:.2s;
 }
-.owner-button:hover{
+.owner-button:hover {
   background:var(--ink);
   color:var(--paper);
 }
 
-main{
+main {
   max-width:1500px;
   margin:auto;
   padding:0 6%;
 }
-.hero{
+.hero {
   padding:75px 0 45px;
   border-bottom:1px solid var(--line);
 }
-.eyebrow{
+.eyebrow {
   font-size:10px;
   letter-spacing:4px;
   color:var(--muted);
 }
-.hero-title{
+.hero-title {
   font-family:'Playfair Display',serif;
   font-size:clamp(55px,10vw,135px);
   line-height:.92;
@@ -97,95 +94,112 @@ main{
   font-weight:500;
   margin:27px 0;
 }
-.hero-title em{font-weight:400}
-.hero-bottom{
+.hero-title em {font-weight:400}
+.hero-bottom {
   display:flex;
   justify-content:space-between;
   align-items:end;
   gap:25px;
 }
-.hero-description{
+.hero-description {
   color:var(--muted);
   max-width:380px;
   font-size:13px;
   line-height:1.9;
 }
-.hero-index{
+.hero-index {
   font-family:'Playfair Display',serif;
   font-size:40px;
 }
 
-.section-heading{
+.section-heading {
   display:flex;
   justify-content:space-between;
   align-items:center;
   border-bottom:1px solid var(--line);
   padding:24px 0 13px;
-  margin-bottom:20px;
+  margin-bottom:15px;
 }
-.section-heading h2{
+.section-heading h2 {
   font-family:'Playfair Display',serif;
   font-weight:500;
   font-size:26px;
   margin:0;
 }
-.section-heading span{
+.section-heading span {
   color:var(--muted);
   font-size:10px;
   letter-spacing:2px;
 }
 
-.marquee{
+/* 3D CIRCULAR PHOTO GALLERY */
+.marquee {
   width:100%;
+  height:410px;
   overflow:hidden;
-  padding:5px 0 35px;
-  mask-image:linear-gradient(90deg,transparent,black 5%,black 95%,transparent);
-}
-.track{
+  position:relative;
+  perspective:1100px;
   display:flex;
-  width:max-content;
-  gap:13px;
-  animation:marquee 48s linear infinite;
+  justify-content:center;
+  align-items:center;
+  isolation:isolate;
 }
-.marquee:hover .track{animation-play-state:paused}
-.slide{
-  width:300px;
-  height:220px;
-  flex:none;
+.track {
+  position:relative;
+  width:190px;
+  height:250px;
+  transform-style:preserve-3d;
+  animation:rotateGallery 28s linear infinite;
+}
+.marquee:hover .track {
+  animation-play-state:paused;
+}
+.slide {
+  position:absolute;
+  inset:0;
+  width:190px;
+  height:250px;
   overflow:hidden;
   background:#d6d0c4;
+  border:1px solid var(--line);
+  backface-visibility:hidden;
+  transform:
+    rotateY(calc(var(--i) * var(--angle)))
+    translateZ(270px);
+  box-shadow:0 12px 35px #0002;
 }
-.slide img{
+.slide img {
   display:block;
   width:100%;
   height:100%;
   object-fit:cover;
-  transition:transform .6s;
   cursor:zoom-in;
+  transition:filter .4s, transform .5s;
 }
-.slide:hover img{transform:scale(1.06)}
-@keyframes marquee{
-  from{transform:translateX(0)}
-  to{transform:translateX(-50%)}
+.slide:hover img {
+  filter:brightness(.85);
+  transform:scale(1.04);
+}
+@keyframes rotateGallery {
+  from {transform:rotateY(0deg)}
+  to {transform:rotateY(-360deg)}
 }
 
-.archive{
-  padding:25px 0 70px;
-}
-.archive-title{
+.archive {padding:25px 0 70px}
+.archive-title {
   font-family:'Playfair Display',serif;
   font-size:clamp(40px,7vw,75px);
   font-weight:500;
   margin:10px 0 25px;
   letter-spacing:-2px;
 }
-.filters{
+.filters {
   display:flex;
   flex-wrap:wrap;
   gap:8px;
   margin-bottom:25px;
 }
-.filters button{
+.filters button {
   background:transparent;
   border:1px solid var(--line);
   padding:9px 15px;
@@ -194,42 +208,41 @@ main{
   color:var(--ink);
 }
 .filters button.active,
-.filters button:hover{
+.filters button:hover {
   background:var(--ink);
   color:var(--paper);
   border-color:var(--ink);
 }
 
-#gallery{
+#gallery {
   columns:4 210px;
   column-gap:16px;
 }
-.photo{
+.photo {
   break-inside:avoid;
   margin:0 0 17px;
 }
-.photo img{
+.photo img {
   display:block;
   width:100%;
   cursor:zoom-in;
   background:#ddd7ca;
-  transition:filter .3s;
 }
-.photo img:hover{filter:brightness(.85)}
-.caption{
+.photo img:hover {filter:brightness(.85)}
+.caption {
   padding:10px 0;
   display:flex;
   justify-content:space-between;
   gap:8px;
   font-size:12px;
 }
-.caption small{
+.caption small {
   color:var(--muted);
   font-size:9px;
   letter-spacing:1px;
   text-transform:uppercase;
 }
-.delete{
+.delete {
   background:transparent;
   border:1px solid #a44;
   color:#a44;
@@ -238,32 +251,32 @@ main{
   margin-bottom:10px;
 }
 
-#ownerPanel{
+#ownerPanel {
   display:none;
   background:#e4dfd4;
   border:1px solid var(--line);
   padding:24px;
   margin:25px 0;
 }
-#ownerPanel h3{
+#ownerPanel h3 {
   font-family:'Playfair Display',serif;
   font-size:25px;
   font-weight:500;
   margin-top:0;
 }
-#uploadForm{
+#uploadForm {
   display:flex;
   flex-wrap:wrap;
   gap:9px;
 }
-input,select{
+input,select {
   background:var(--white);
   color:var(--ink);
   border:1px solid var(--line);
   padding:12px;
   max-width:100%;
 }
-.action-button{
+.action-button {
   background:var(--ink);
   color:var(--paper);
   border:1px solid var(--ink);
@@ -271,14 +284,14 @@ input,select{
   font-size:10px;
   letter-spacing:1px;
 }
-.action-button:disabled{opacity:.5}
-#status{
+.action-button:disabled {opacity:.5}
+#status {
   color:var(--muted);
   font-size:12px;
   margin-top:12px;
 }
 
-footer{
+footer {
   border-top:1px solid var(--line);
   padding:35px 6%;
   display:flex;
@@ -286,17 +299,17 @@ footer{
   flex-wrap:wrap;
   gap:15px;
 }
-.footer-logo{
+.footer-logo {
   font-family:'Playfair Display',serif;
   font-size:24px;
 }
-footer small{
+footer small {
   color:var(--muted);
   font-size:10px;
   letter-spacing:1px;
 }
 
-#loginPanel,#viewer{
+#loginPanel,#viewer {
   display:none;
   position:fixed;
   inset:0;
@@ -305,62 +318,75 @@ footer small{
   place-items:center;
   padding:20px;
 }
-.loginbox{
+.loginbox {
   width:min(390px,100%);
   background:var(--paper);
   padding:30px;
   border:1px solid var(--line);
 }
-.loginbox h2{
+.loginbox h2 {
   font-family:'Playfair Display',serif;
   font-size:35px;
   font-weight:500;
   margin:0 0 5px;
 }
-.loginbox p{
+.loginbox p {
   color:var(--muted);
   font-size:11px;
   letter-spacing:2px;
 }
-.loginbox input{
+.loginbox input {
   display:block;
   width:100%;
   margin:12px 0;
 }
-.loginbox button{width:100%;margin-top:7px}
-#loginStatus{
+.loginbox button {width:100%;margin-top:7px}
+#loginStatus {
   font-size:12px;
   color:#9b3939;
   letter-spacing:0;
 }
-#viewer{
+#viewer {
   background:#090909f5;
   cursor:zoom-out;
 }
-#viewer img{
+#viewer img {
   max-width:95vw;
   max-height:90vh;
   object-fit:contain;
 }
-.empty{
+.empty {
   color:var(--muted);
   font-size:13px;
   padding:20px 0;
 }
 
-@media(max-width:700px){
-  header{padding:19px 5%}
-  main{padding:0 5%}
-  .header-note{display:none}
-  .hero{padding-top:55px}
-  .hero-title{letter-spacing:-3px}
-  .hero-bottom{align-items:start}
-  .slide{width:230px;height:175px}
-  #gallery{columns:2 140px}
-  footer{padding:28px 5%}
+@media(max-width:700px) {
+  header {padding:19px 5%}
+  main {padding:0 5%}
+  .header-note {display:none}
+  .hero {padding-top:55px}
+  .hero-title {letter-spacing:-3px}
+  .hero-bottom {align-items:start}
+  .marquee {
+    height:330px;
+    perspective:850px;
+  }
+  .track {
+    transform:scale(.78);
+  }
+  .slide {
+    width:170px;
+    height:225px;
+    transform:
+      rotateY(calc(var(--i) * var(--angle)))
+      translateZ(220px);
+  }
+  #gallery {columns:2 140px}
+  footer {padding:28px 5%}
 }
-@media(prefers-reduced-motion:reduce){
-  .track{animation:none}
+@media(prefers-reduced-motion:reduce) {
+  .track {animation:none}
 }
 </style>
 </head>
@@ -379,12 +405,7 @@ footer small{
 <main>
 <section class="hero">
   <div class="eyebrow">VISUAL STORIES · EST. 2026</div>
-
-  <h1 class="hero-title">
-    The art of<br>
-    <em>capturing life.</em>
-  </h1>
-
+  <h1 class="hero-title">The art of<br><em>capturing life.</em></h1>
   <div class="hero-bottom">
     <p class="hero-description">
       A personal collection of places, people, and fleeting moments.
@@ -399,7 +420,6 @@ footer small{
     <h2>Selected Moments</h2>
     <span>AN ONGOING COLLECTION</span>
   </div>
-
   <div class="marquee">
     <div class="track" id="track"></div>
   </div>
@@ -417,12 +437,8 @@ footer small{
       <option value="Travel">Travel</option>
       <option value="Other">Other</option>
     </select>
-    <button class="action-button" id="uploadButton" type="submit">
-      UPLOAD PHOTO +
-    </button>
-    <button class="action-button" type="button" id="logoutBtn">
-      LOG OUT
-    </button>
+    <button class="action-button" id="uploadButton" type="submit">UPLOAD PHOTO +</button>
+    <button class="action-button" type="button" id="logoutBtn">LOG OUT</button>
   </form>
   <div id="status">Owner mode active.</div>
 </section>
@@ -430,7 +446,6 @@ footer small{
 <section class="archive">
   <div class="eyebrow">THE PHOTOGRAPHY ARCHIVE</div>
   <h2 class="archive-title">Collected frames.</h2>
-
   <nav class="filters" id="filters">
     <button class="active" data-cat="All">ALL WORKS</button>
     <button data-cat="Nature">NATURE</button>
@@ -439,7 +454,6 @@ footer small{
     <button data-cat="Travel">TRAVEL</button>
     <button data-cat="Other">OTHER</button>
   </nav>
-
   <section id="gallery">
     <p class="empty">Loading collection...</p>
   </section>
@@ -457,25 +471,11 @@ footer small{
     <div class="eyebrow">PRIVATE ACCESS</div>
     <h2>Welcome back.</h2>
     <p>OWNER STUDIO · AUTHORIZED ACCESS</p>
-
     <form id="loginForm">
-      <input
-        id="password"
-        type="password"
-        placeholder="Enter your owner password"
-        autocomplete="current-password"
-        required
-      >
-      <button class="action-button" type="submit">
-        SIGN IN ↗
-      </button>
-      <button class="action-button" type="button"
-        id="closeLogin"
-        style="background:transparent;color:#191916">
-        CANCEL
-      </button>
+      <input id="password" type="password" placeholder="Enter your owner password" autocomplete="current-password" required>
+      <button class="action-button" type="submit">SIGN IN ↗</button>
+      <button class="action-button" type="button" id="closeLogin" style="background:transparent;color:#191916">CANCEL</button>
     </form>
-
     <div id="loginStatus"></div>
   </div>
 </div>
@@ -486,21 +486,12 @@ footer small{
 
 <script>
 // SUPABASE CONFIGURATION
-const SUPABASE_URL =
-  "https://evipwzjdyelahsemvqjv.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_O4sRwFbo8YsbYokaH_QeEw_aGzhM3D1";
-
-const OWNER_EMAIL =
-  "akhtar32132123@gmail.com";
-
+const SUPABASE_URL = "https://evipwzjdyelahsemvqjv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_O4sRwFbo8YsbYokaH_QeEw_aGzhM3D1";
+const OWNER_EMAIL = "akhtar32132123@gmail.com";
 const BUCKET = "akhtar-photos";
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let isOwner = false;
 let currentCategory = "All";
@@ -509,91 +500,85 @@ const gallery = document.getElementById("gallery");
 const track = document.getElementById("track");
 const statusEl = document.getElementById("status");
 
-function setStatus(message){
+function setStatus(message) {
   statusEl.textContent = message;
 }
 
-function photoURL(photo){
+function photoURL(photo) {
   if(photo.image_url) return photo.image_url;
-
-  return db.storage
-    .from(BUCKET)
-    .getPublicUrl(photo.image_path)
-    .data.publicUrl;
+  return db.storage.from(BUCKET).getPublicUrl(photo.image_path).data.publicUrl;
 }
 
 // PHOTO VIEWER
-function openViewer(url){
+function openViewer(url) {
   document.getElementById("viewerImg").src = url;
   document.getElementById("viewer").style.display = "grid";
 }
 
-document.getElementById("viewer").onclick = ()=>{
+document.getElementById("viewer").onclick = () => {
   document.getElementById("viewer").style.display = "none";
 };
 
-// INFINITE SLIDER
-function renderSlider(photos){
+// 3D CIRCULAR GALLERY
+function renderSlider(photos) {
   track.innerHTML = "";
 
   if(!photos.length) return;
 
-  const repeated = [...photos,...photos];
+  const count = Math.min(photos.length,8);
+  const angle = 360/count;
 
-  repeated.forEach((photo,index)=>{
+  track.style.setProperty("--angle",angle+"deg");
+
+  for(let i=0;i<count;i++) {
+    const photo = photos[i];
     const slide = document.createElement("div");
     slide.className = "slide";
+    slide.style.setProperty("--i",i);
 
     const img = document.createElement("img");
     img.src = photoURL(photo);
     img.alt = photo.title || "Mutho Photo";
-    img.loading = index < photos.length ? "eager" : "lazy";
-
-    img.onclick = ()=>openViewer(img.src);
+    img.loading = i < 3 ? "eager" : "lazy";
+    img.onclick = () => openViewer(img.src);
 
     slide.appendChild(img);
     track.appendChild(slide);
-  });
+  }
 }
 
 // LOAD PHOTOS
-async function loadPhotos(){
+async function loadPhotos() {
   gallery.innerHTML = '<p class="empty">Loading collection...</p>';
 
-  let query = db.from("photos")
+  const {data,error} = await db.from("photos")
     .select("*")
     .order("created_at",{ascending:false});
 
-  if(currentCategory !== "All"){
-    query = query.eq("category",currentCategory);
-  }
-
-  const {data,error} = await query;
-
-  if(error){
-    gallery.innerHTML =
-      '<p class="empty">Unable to load collection: ' +
-      error.message + '</p>';
+  if(error) {
+    gallery.innerHTML = '<p class="empty">Unable to load collection: '+
+      error.message+'</p>';
     console.error(error);
     return;
   }
 
   const photos = data || [];
 
-  // Slider uses all photos, regardless of active filter.
-  if(currentCategory === "All"){
-    renderSlider(photos);
-  }
+  // Circular slider always uses the complete photo collection.
+  renderSlider(photos);
+
+  const filtered = currentCategory === "All"
+    ? photos
+    : photos.filter(p => p.category === currentCategory);
 
   gallery.innerHTML = "";
 
-  if(!photos.length){
-    gallery.innerHTML =
-      '<p class="empty">No photographs in this collection yet.</p>';
+  if(!filtered.length) {
+    gallery.innerHTML = '<p class="empty">No photographs in this collection yet.</p>';
     return;
   }
 
-  photos.forEach(photo=>{
+  filtered.forEach(photo => {
     const card = document.createElement("article");
     card.className = "photo";
 
@@ -601,7 +586,7 @@ async function loadPhotos(){
     img.src = photoURL(photo);
     img.alt = photo.title || "Mutho Photo";
     img.loading = "lazy";
-    img.onclick = ()=>openViewer(img.src);
+    img.onclick = () => openViewer(img.src);
 
     const caption = document.createElement("div");
     caption.className = "caption";
@@ -615,11 +600,11 @@ async function loadPhotos(){
     caption.append(title,category);
     card.append(img,caption);
 
-    if(isOwner){
+    if(isOwner) {
       const del = document.createElement("button");
       del.className = "delete";
       del.textContent = "DELETE PHOTO";
-      del.onclick = ()=>deletePhoto(photo);
+      del.onclick = () => deletePhoto(photo);
       card.appendChild(del);
     }
 
@@ -627,11 +612,9 @@ async function loadPhotos(){
   });
 }
 
-// UPLOAD
-document.getElementById("uploadForm")
-.addEventListener("submit",async function(e){
+// UPLOAD PHOTO
+document.getElementById("uploadForm").addEventListener("submit",async function(e) {
   e.preventDefault();
-
   if(!isOwner) return;
 
   const file = document.getElementById("photoFile").files[0];
@@ -639,7 +622,7 @@ document.getElementById("uploadForm")
   const category = document.getElementById("photoCategory").value;
   const button = document.getElementById("uploadButton");
 
-  if(!file || !file.type.startsWith("image/")){
+  if(!file || !file.type.startsWith("image/")) {
     setStatus("Please select a valid image.");
     return;
   }
@@ -647,34 +630,28 @@ document.getElementById("uploadForm")
   const extension = (file.name.split(".").pop() || "jpg")
     .toLowerCase().replace(/[^a-z0-9]/g,"");
 
-  const path =
-    Date.now()+"-"+crypto.randomUUID()+"."+extension;
+  const path = Date.now()+"-"+crypto.randomUUID()+"."+extension;
 
   button.disabled = true;
   setStatus("Uploading photograph...");
 
-  try{
-    const {error:uploadError} = await db.storage
-      .from(BUCKET)
-      .upload(path,file,{
-        contentType:file.type
-      });
+  try {
+    const {error:uploadError} = await db.storage.from(BUCKET)
+      .upload(path,file,{contentType:file.type});
 
     if(uploadError) throw uploadError;
 
-    const publicUrl = db.storage
-      .from(BUCKET)
+    const publicUrl = db.storage.from(BUCKET)
       .getPublicUrl(path).data.publicUrl;
 
-    const {error:insertError} = await db.from("photos")
-      .insert({
-        title:title,
-        category:category,
-        image_path:path,
-        image_url:publicUrl
-      });
+    const {error:insertError} = await db.from("photos").insert({
+      title:title,
+      category:category,
+      image_path:path,
+      image_url:publicUrl
+    });
 
-    if(insertError){
+    if(insertError) {
       await db.storage.from(BUCKET).remove([path]);
       throw insertError;
     }
@@ -683,32 +660,29 @@ document.getElementById("uploadForm")
     setStatus("Photograph uploaded successfully.");
     await loadPhotos();
 
-  }catch(error){
+  } catch(error) {
     setStatus("Upload failed: "+error.message);
-  }finally{
+  } finally {
     button.disabled = false;
   }
 });
 
-// DELETE
-async function deletePhoto(photo){
+// DELETE PHOTO
+async function deletePhoto(photo) {
   if(!confirm("Delete this photograph?")) return;
 
   const {error} = await db.from("photos")
     .delete()
     .eq("id",photo.id);
 
-  if(error){
+  if(error) {
     alert("Delete failed: "+error.message);
     return;
   }
 
-  if(photo.image_path){
-    const result = await db.storage
-      .from(BUCKET)
-      .remove([photo.image_path]);
-
-    if(result.error){
+  if(photo.image_path) {
+    const result = await db.storage.from(BUCKET).remove([photo.image_path]);
+    if(result.error) {
       console.error(result.error);
       alert("Photo record deleted, but storage cleanup failed.");
     }
@@ -718,16 +692,15 @@ async function deletePhoto(photo){
 }
 
 // OWNER LOGIN
-document.getElementById("loginBtn").onclick = ()=>{
+document.getElementById("loginBtn").onclick = () => {
   document.getElementById("loginPanel").style.display = "grid";
 };
 
-document.getElementById("closeLogin").onclick = ()=>{
+document.getElementById("closeLogin").onclick = () => {
   document.getElementById("loginPanel").style.display = "none";
 };
 
-document.getElementById("loginForm")
-.addEventListener("submit",async function(e){
+document.getElementById("loginForm").addEventListener("submit",async function(e) {
   e.preventDefault();
 
   const msg = document.getElementById("loginStatus");
@@ -738,13 +711,13 @@ document.getElementById("loginForm")
     password:document.getElementById("password").value
   });
 
-  if(error){
+  if(error) {
     msg.textContent = "Login failed. Check your password.";
     console.error(error);
     return;
   }
 
-  if(data.user.email?.toLowerCase() !== OWNER_EMAIL){
+  if(data.user.email?.toLowerCase() !== OWNER_EMAIL) {
     await db.auth.signOut();
     msg.textContent = "Unauthorized account.";
     return;
@@ -752,16 +725,15 @@ document.getElementById("loginForm")
 
   document.getElementById("loginPanel").style.display = "none";
   document.getElementById("password").value = "";
-
   updateOwner(true);
 });
 
-document.getElementById("logoutBtn").onclick = async()=>{
+document.getElementById("logoutBtn").onclick = async () => {
   await db.auth.signOut();
   updateOwner(false);
 };
 
-function updateOwner(value){
+function updateOwner(value) {
   isOwner = value;
 
   document.getElementById("ownerPanel").style.display =
@@ -775,11 +747,10 @@ function updateOwner(value){
 }
 
 // FILTERS
-document.querySelectorAll("#filters button")
-.forEach(button=>{
-  button.onclick = ()=>{
+document.querySelectorAll("#filters button").forEach(button => {
+  button.onclick = () => {
     document.querySelectorAll("#filters button")
-      .forEach(b=>b.classList.remove("active"));
+      .forEach(b => b.classList.remove("active"));
 
     button.classList.add("active");
     currentCategory = button.dataset.cat;
@@ -787,8 +758,8 @@ document.querySelectorAll("#filters button")
   };
 });
 
-// CHECK SESSION
-db.auth.getSession().then(({data,error})=>{
+// CHECK LOGIN SESSION
+db.auth.getSession().then(({data,error}) => {
   if(error) console.error(error);
 
   const user = data.session?.user;
